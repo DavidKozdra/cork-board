@@ -1,11 +1,18 @@
-import { AppBar, Box, Container, Toolbar, Typography } from "@mui/material"
-import React from "react"
+import {
+    AppBar,
+    Box,
+    Container,
+    Link,
+    Toolbar,
+    Typography,
+} from "@mui/material"
+import React, { useState } from "react"
 import "/node_modules/react-grid-layout/css/styles.css"
 import "/node_modules/react-resizable/css/styles.css"
 import useSWR from "swr"
 
 import "./App.css"
-import { BoardGrid } from "./components/BoardGrid"
+import { PostsGrid } from "./components/PostsGrid"
 
 function BoardPage({ id }) {
     const { data: board, error } = useSWR(`/api/boards/${id}`)
@@ -36,7 +43,7 @@ function Board({ board }) {
                     }}
                 >
                     <Container>
-                        <BoardGrid items={board.items}></BoardGrid>
+                        <PostsGrid posts={board.posts}></PostsGrid>
                     </Container>
                 </Box>
             </main>
@@ -44,59 +51,75 @@ function Board({ board }) {
     )
 }
 
-function App() {
-    let _boards = [
-        {
-            name: "My Board",
-            items: [
-                {
-                    shape: { x: 0, y: 0, w: 1, h: 1 }, // TODO: For testing only
-                    isOwn: false,
-                    content: "A",
-                    id: "foo",
-                },
-                {
-                    // TODO: For testing only
-                    isOwn: true,
-                    shape: { x: 1, y: 1, w: 3, h: 1 },
-                    content: "B",
-                    id: "bar",
-                },
-                {
-                    // TODO: For testing only
-                    isOwn: true,
-                    shape: { x: 4, y: 0, w: 1, h: 1 },
-                    content: "C",
-                    id: "baz",
-                },
-            ],
-        },
-    ]
+function BoardGrid({ onClick }) {
+    const { data: boards, error } = useSWR("/api/boards")
+
+    if (error) return <p>An error occurred loading boards...</p>
+    if (!boards) return <p>Loading boards...</p>
 
     return (
-        <div>
-            <BoardPage id={"625738b47be14bf35d9fa8f9"}></BoardPage>
-            {/*<AppBar>*/}
-            {/*    <Toolbar>*/}
-            {/*        <Typography variant="h6" color="inherit" noWrap>*/}
-            {/*            {Object.keys(boards)[0]}*/}
-            {/*        </Typography>*/}
-            {/*    </Toolbar>*/}
-            {/*</AppBar>*/}
-            {/*<main>*/}
-            {/*    <Box*/}
-            {/*        sx={{*/}
-            {/*            bgcolor: "background.paper",*/}
-            {/*            pt: 8,*/}
-            {/*            pb: 6,*/}
-            {/*        }}*/}
-            {/*    >*/}
-            {/*        <Container>*/}
-            {/*            <BoardGrid items={Object.values(boards)[0]}></BoardGrid>*/}
-            {/*        </Container>*/}
-            {/*    </Box>*/}
-            {/*</main>*/}
-        </div>
+        <ul>
+            {boards.map((board) => {
+                return (
+                    <div key={board._id}>
+                        <Link onClick={() => onClick(board)} href="#">
+                            <p>
+                                {board.name} managed by {board.admin}
+                            </p>
+                        </Link>
+                    </div>
+                )
+            })}
+        </ul>
+    )
+}
+
+function App() {
+    let x = {
+        name: "Foo",
+        posts: [
+            {
+                id: "foo",
+                title: "My Title",
+                body: "My Body",
+                author: "Noskcaj19",
+                shape: { x: 1, y: 1, w: 3, h: 2 },
+            },
+            {
+                id: "bar",
+                title: "My Title 2",
+                body: "My Body 2",
+                author: "David",
+                shape: { x: 2, y: 3, w: 4, h: 4 },
+            },
+        ],
+        users: ["Noskcaj19"],
+        admin: "Noskcaj19",
+        settings: {},
+    }
+    console.log(JSON.stringify(x))
+
+    const [currentBoard, setCurrentBoard] = useState(null)
+
+    return (
+        <>
+            <Box
+                sx={{
+                    bgcolor: "background.paper",
+                    pt: 8,
+                    pb: 6,
+                }}
+            >
+                <BoardGrid onClick={(board) => setCurrentBoard(board._id)}></BoardGrid>
+            </Box>
+            <div>
+                {currentBoard ? (
+                    <BoardPage id={currentBoard}></BoardPage>
+                ) : (
+                    <p>Select a board</p>
+                )}
+            </div>
+        </>
     )
 }
 
