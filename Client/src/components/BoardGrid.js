@@ -1,7 +1,7 @@
 import GridLayout from "react-grid-layout";
 import React from "react";
 
-export function BoardGrid(props) {
+export function BoardGrid({items}) {
   return (
     <GridLayout
       className="board-grid"
@@ -11,7 +11,7 @@ export function BoardGrid(props) {
       onLayoutChange={(l) => console.log(l)}
       compactType={null}
     >
-      {props.boards.map((board) => {
+      {items.map((board) => {
         let grid = {
           ...board.shape,
           minW: 1,

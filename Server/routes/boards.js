@@ -28,7 +28,7 @@ boardRoutes.route("/").get(function (req, res) {
 // This section will help you get a single record by id
 boardRoutes.route("/:id").get(function (req, res) {
     let db_connect = dbo.getDb()
-    let myquery = { _id: ObjectId(req.params.id) }
+    let myquery = { _id: new ObjectId(req.params.id) }
     db_connect.collection("boards").findOne(myquery, function (err, result) {
         if (err) throw err
         res.json(result)
@@ -51,18 +51,16 @@ boardRoutes.route("/add").post(function (req, res) {
     }
 
     // insert user into database
-    db_connect
-        .collection("boards")
-        .insertOne(boardObj, function (err, response) {
-            if (err) throw err
-            res.json(response)
-        })
+    db_connect.collection("boards").insertOne(board, function (err, response) {
+        if (err) throw err
+        res.json(response)
+    })
 })
 
 // This section will help you update a record by id.
 boardRoutes.route("/update/:id").post(function (req, res) {
     let db_connect = dbo.getDb()
-    let myquery = { _id: ObjectId(req.params.id) }
+    let myquery = { _id: new ObjectId(req.params.id) }
     let newvalues = {
         $set: {
             name: req.body.name,
@@ -84,7 +82,7 @@ boardRoutes.route("/update/:id").post(function (req, res) {
 // This section will help you delete a record
 boardRoutes.route("/remove/:id").delete((req, response) => {
     let db_connect = dbo.getDb()
-    let myquery = { _id: ObjectId(req.params.id) }
+    let myquery = { _id: new ObjectId(req.params.id) }
     db_connect.collection("boards").deleteOne(myquery, function (err, obj) {
         if (err) throw err
         console.log("1 document deleted")
