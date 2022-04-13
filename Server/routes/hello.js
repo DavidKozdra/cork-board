@@ -1,3 +1,3 @@
 module.exports = (req, res) => {
-    res.send('Hello Chad you are gay!')
+    res.send("Hello Chad you are gay!")
 }

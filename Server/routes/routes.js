@@ -1,18 +1,18 @@
-var express = require("express");
-var router = express.Router();
+var express = require("express")
+var router = express.Router()
 
-var usersRoute = require("./users");
-var postRoutes = require("./posts");
-var boardRoutes = require("./boards");
-router.use(express.json());
+var usersRoute = require("./users")
+var postRoutes = require("./posts")
+var boardRoutes = require("./boards")
+router.use(express.json())
 
 router.get("/", function (req, res) {
-	res.send("default route /");
-});
+    res.send("default route /")
+})
 
-router.use("/users", usersRoute);
-router.use("/posts", postRoutes);
-router.use("/boards", boardRoutes);
-router.use("/hello", require("./hello"));
+router.use("/users", usersRoute)
+router.use("/posts", postRoutes)
+router.use("/boards", boardRoutes)
+router.use("/hello", require("./hello"))
 
-module.exports = router;
+module.exports = router
