@@ -16,9 +16,15 @@ const ObjectId = require("mongodb").ObjectId
 // boards
 // posts
 
+
 // This section will help you get a list of all the records.
 userRoutes.get("/", session, async function (req, res) {
-    await req.session.save()
+    if(req.session.user == undefined){
+        res.json({"error": "not logged in"})
+        res.status(500)
+        express.redirect("/login")
+        return
+    }
     let db_connect = dbo.getDb("corkboard")
     db_connect
         .collection("users")
