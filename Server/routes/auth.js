@@ -31,7 +31,7 @@ AuthLoginRoute.get("/login", session, async function (req, res) {
 })
 
 AuthLoginRoute.get("/debug", session, async function (req, res) {
-    res.json({ loggedin: req.session !== undefined, data: req.session })
+    res.json({ loggedin: req.session === undefined, data: req.session })
 })
 
 AuthLoginRoute.get("/logout", session, async function (req, res) {

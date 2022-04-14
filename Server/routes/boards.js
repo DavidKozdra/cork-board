@@ -111,4 +111,55 @@ boardRoutes.delete("/remove/:id", async function (req, response) {
     })
 })
 
+// This section will help you get a list of all the records.
+boardRoutes.post(
+    "/:id/posts/:postid/updatepos",
+    session,
+    async function (req, res) {
+        if (req.session === undefined) {
+            res.status(401).json({
+                message: "You are not logged in.",
+            })
+            return
+        }
+        console.log(req.params)
+
+        let db_connect = dbo.getDb("corkboard")
+
+        let post = await db_connect
+            .collection("posts")
+            .findOne({ _id: new ObjectId(req.body.id) })
+        //find author of this post with id
+        console.log("found post: " + JSON.stringify(post))
+
+        if (
+            req.session.user.name !=
+            post.author /* && req.session.user.name != req.body.admin*/
+        ) {
+            res.status(401).json({
+                message: "You are not authorized to do this.",
+            })
+            return
+        }
+
+        let gridData = req.body.gridData
+        let result = await db_connect.collection("posts").findOneAndUpdate(
+            { _id: new ObjectId(req.body.id) },
+            {
+                $set: {
+                    shape: {
+                        w: gridData.w,
+                        h: gridData.h,
+                        x: gridData.x,
+                        y: gridData.y,
+                    },
+                },
+            }
+        )
+
+        console.log("result: " + JSON.stringify(result))
+        res.status(200).json(result.value)
+    }
+)
+
 module.exports = boardRoutes

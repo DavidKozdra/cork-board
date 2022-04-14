@@ -5,6 +5,7 @@ const app = express()
 const port = 5000
 require("dotenv").config()
 
+app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use("/", require("./routes/routes.js"))
 
