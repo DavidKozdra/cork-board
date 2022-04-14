@@ -4,7 +4,7 @@ var userRoutes = express.Router()
 
 // This will help us connect to the database
 const dbo = require("../dbcon")
-const { default: session } = require("./session")
+const { default: session } = require("../session")
 
 // This help convert the id from string to ObjectId for the _id.
 const ObjectId = require("mongodb").ObjectId

@@ -4,7 +4,7 @@ var AuthLoginRoute = express.Router()
 
 // This will help us connect to the database
 const dbo = require("../dbcon")
-const { default: session } = require("./session")
+const { default: session } = require("../session")
 
 // This help convert the id from string to ObjectId for the _id.
 const ObjectId = require("mongodb").ObjectId
@@ -30,12 +30,8 @@ AuthLoginRoute.get("/login", session, async function (req, res) {
     res.redirect("/")
 })
 
-AuthLoginRoute.get("/current", session, async function (req, res) {
-    if (req.session === undefined) {
-        res.json({ loggedin: false })
-    } else {
-        res.json({ loggedin: true, user: req.session.user })
-    }
+AuthLoginRoute.get("/debug", session, async function (req, res) {
+    res.json({ loggedin: req.session !== undefined, data: req.session })
 })
 
 AuthLoginRoute.get("/logout", session, async function (req, res) {

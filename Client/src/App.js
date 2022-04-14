@@ -2,10 +2,18 @@ import {
     AppBar,
     Box,
     Container,
-    Link,
     Toolbar,
     Typography,
+    Link,
 } from "@mui/material"
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link as RouterLink,
+    useParams,
+    Redirect,
+} from "react-router-dom"
 import React, { useState } from "react"
 import "/node_modules/react-grid-layout/css/styles.css"
 import "/node_modules/react-resizable/css/styles.css"
@@ -51,7 +59,7 @@ function Board({ board }) {
     )
 }
 
-function BoardGrid({ onClick }) {
+function BoardGrid() {
     const { data: boards, error } = useSWR("/api/boards")
 
     if (error) return <p>An error occurred loading boards...</p>
@@ -62,7 +70,7 @@ function BoardGrid({ onClick }) {
             {boards.map((board) => {
                 return (
                     <div key={board._id}>
-                        <Link onClick={() => onClick(board)} href="#">
+                        <Link component={RouterLink} to={`/board/${board._id}`}>
                             <p>
                                 {board.name} managed by {board.admin}
                             </p>
@@ -74,51 +82,37 @@ function BoardGrid({ onClick }) {
     )
 }
 
+function BoardView() {
+    const { id } = useParams()
+    return (
+        <div>
+            {id ? <BoardPage id={id}></BoardPage> : <p>Select a board</p>}
+        </div>
+    )
+}
+
 function App() {
-    let x = {
-        name: "Foo",
-        posts: [
-            {
-                id: "foo",
-                title: "My Title",
-                body: "My Body",
-                author: "Noskcaj19",
-                shape: { x: 1, y: 1, w: 3, h: 2 },
-            },
-            {
-                id: "bar",
-                title: "My Title 2",
-                body: "My Body 2",
-                author: "David",
-                shape: { x: 2, y: 3, w: 4, h: 4 },
-            },
-        ],
-        users: ["Noskcaj19"],
-        admin: "Noskcaj19",
-        settings: {},
-    }
-    console.log(JSON.stringify(x))
-
-    const [currentBoard, setCurrentBoard] = useState(null)
-
     return (
         <>
-            <Box
-                sx={{
-                    bgcolor: "background.paper",
-                    pt: 8,
-                    pb: 6,
-                }}
-            >
-                <BoardGrid onClick={(board) => setCurrentBoard(board._id)}></BoardGrid>
-            </Box>
-            <div>
-                {currentBoard ? (
-                    <BoardPage id={currentBoard}></BoardPage>
-                ) : (
-                    <p>Select a board</p>
-                )}
-            </div>
+            <Router>
+                <Redirect exact from="/" to="boards" />
+                <Switch>
+                    <Route path="/boards">
+                        <Box
+                            sx={{
+                                bgcolor: "background.paper",
+                                pt: 8,
+                                pb: 6,
+                            }}
+                        >
+                            <BoardGrid />
+                        </Box>
+                    </Route>
+                    <Route path="/board/:id">
+                        <BoardView />
+                    </Route>
+                </Switch>
+            </Router>
         </>
     )
 }

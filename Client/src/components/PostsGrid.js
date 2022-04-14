@@ -21,9 +21,12 @@ export function PostsGrid({ posts }) {
                     static: false,
                 }
                 return (
-                    <div key={post.id} data-grid={grid}>
+                    <div key={post._id} data-grid={grid}>
                         <h3>{post.title}</h3>
                         <p>{post.body}</p>
+                        <small>
+                            By <strong>{post.author}</strong>
+                        </small>
                     </div>
                 )
             })}

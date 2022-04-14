@@ -1,4 +1,3 @@
-var express = require("express")
 var session = require("iron-session/express").ironSession
 require("dotenv").config()
 

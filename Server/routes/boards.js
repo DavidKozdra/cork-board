@@ -4,7 +4,7 @@ var boardRoutes = express.Router()
 
 // This will help us connect to the database
 const dbo = require("../dbcon")
-const { default: session } = require("./session")
+const { default: session } = require("../session")
 
 // This help convert the id from string to ObjectId for the _id.
 const ObjectId = require("mongodb").ObjectId
@@ -16,8 +16,17 @@ boardRoutes.use("/:id/posts", require("./posts"))
 // boards
 // posts
 
+const POSTS_LOOKUP = {
+    $lookup: {
+        from: "posts",
+        localField: "posts",
+        foreignField: "_id",
+        as: "posts",
+    },
+}
+
 // This section will help you get a list of all the records.
-boardRoutes.get("/", session, function (req, res) {
+boardRoutes.get("/", session, async function (req, res) {
     if (req.session === undefined) {
         res.status(401).json({
             message: "You are not logged in.",
@@ -25,27 +34,30 @@ boardRoutes.get("/", session, function (req, res) {
         return
     }
     let db_connect = dbo.getDb("corkboard")
-    db_connect
-        .collection("boards")
-        .find({})
-        .toArray(function (err, result) {
-            if (err) throw err
-            res.status(200).json(result)
-        })
+
+    let agg = [POSTS_LOOKUP]
+
+    let results = await db_connect.collection("boards").aggregate(agg).toArray()
+    res.status(200).json(results)
 })
 
 // This section will help you get a single record by id
-boardRoutes.route("/:id").get(function (req, res) {
+boardRoutes.route("/:id").get(async function (req, res) {
     let db_connect = dbo.getDb()
-    let myquery = { _id: new ObjectId(req.params.id) }
-    db_connect.collection("boards").findOne(myquery, function (err, result) {
-        if (err) throw err
-        res.json(result)
-    })
+    let agg = [
+        {
+            $match: {
+                _id: new ObjectId(req.params.id),
+            },
+        },
+        POSTS_LOOKUP,
+    ]
+    let results = await db_connect.collection("boards").aggregate(agg).next()
+    res.json(results)
 })
 
 // This section will help you create a new record.
-boardRoutes.route("/add").post(function (req, res) {
+boardRoutes.post("/add", async function (req, res) {
     let db_connect = dbo.getDb()
 
     //console.log("req: " + JSON.stringify(req.body));
@@ -67,7 +79,7 @@ boardRoutes.route("/add").post(function (req, res) {
 })
 
 // This section will help you update a record by id.
-boardRoutes.route("/update/:id").post(function (req, res) {
+boardRoutes.post("/update/:id", async function (req, res) {
     let db_connect = dbo.getDb()
     let myquery = { _id: new ObjectId(req.params.id) }
     let newvalues = {
@@ -89,7 +101,7 @@ boardRoutes.route("/update/:id").post(function (req, res) {
 })
 
 // This section will help you delete a record
-boardRoutes.route("/remove/:id").delete((req, response) => {
+boardRoutes.delete("/remove/:id", async function (req, response) {
     let db_connect = dbo.getDb()
     let myquery = { _id: new ObjectId(req.params.id) }
     db_connect.collection("boards").deleteOne(myquery, function (err, obj) {
