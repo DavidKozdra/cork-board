@@ -8,6 +8,9 @@ const dbo = require("../dbcon")
 // This help convert the id from string to ObjectId for the _id.
 const ObjectId = require("mongodb").ObjectId
 
+
+boardRoutes.use("/:id/posts", require("./posts"))
+
 // Collections:
 // users
 // boards
@@ -15,6 +18,12 @@ const ObjectId = require("mongodb").ObjectId
 
 // This section will help you get a list of all the records.
 boardRoutes.route("/").get(function (req, res) {
+    if (session.user === undefined) {
+        res.status(401).json({
+            message: "You are not logged in."
+        })
+        return
+    }
     let db_connect = dbo.getDb("corkboard")
     db_connect
         .collection("boards")

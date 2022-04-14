@@ -4,9 +4,12 @@ var userRoutes = express.Router()
 
 // This will help us connect to the database
 const dbo = require("../dbcon")
+const { default: session } = require("./ironSession")
 
 // This help convert the id from string to ObjectId for the _id.
 const ObjectId = require("mongodb").ObjectId
+
+
 
 // Collections:
 // users
@@ -14,7 +17,8 @@ const ObjectId = require("mongodb").ObjectId
 // posts
 
 // This section will help you get a list of all the records.
-userRoutes.route("/").get(function (req, res) {
+userRoutes.get("/", session, async function (req, res) {
+    await req.session.save()
     let db_connect = dbo.getDb("corkboard")
     db_connect
         .collection("users")
@@ -24,6 +28,7 @@ userRoutes.route("/").get(function (req, res) {
             res.status(200).json(result)
         })
 })
+
 
 // This section will help you get a single record by id
 userRoutes.route("/:id").get(function (req, res) {
@@ -66,7 +71,7 @@ function validatePassword(password) {
 }
 
 // This section will help you create a new record.
-userRoutes.route("/add").post(function (req, res) {
+userRoutes.route("/add",session).post(function (req, res) {
     let db_connect = dbo.getDb()
 
     //console.log("req: " + JSON.stringify(req.body));
@@ -78,7 +83,6 @@ userRoutes.route("/add").post(function (req, res) {
         email: req.body.email,
         password: req.body.password,
     }
-
     // validation
     if (!validateName(userObj.name))
         return res.status(500).send("error: name invalid")

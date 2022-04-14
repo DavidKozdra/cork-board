@@ -13,7 +13,7 @@ const client = new MongoClient(url, {
 const dbname = "corkboard"
 
 var _db
-
+// TODO: Convert connectToServer to async/await so we can block until we have a db conn
 module.exports = {
     connectToServer: function (callback) {
         client.connect(function (err, db) {
