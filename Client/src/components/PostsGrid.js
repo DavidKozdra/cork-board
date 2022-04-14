@@ -31,7 +31,6 @@ export function PostsGrid({ posts }) {
                     maxW: 4,
                     minH: 1,
                     maxH: 4,
-                    static: false,
                 }
 
                 return (

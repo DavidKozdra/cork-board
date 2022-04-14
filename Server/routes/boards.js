@@ -42,7 +42,7 @@ boardRoutes.get("/", session, async function (req, res) {
 })
 
 // This section will help you get a single record by id
-boardRoutes.route("/:id").get(async function (req, res) {
+boardRoutes.get("/:id",session,async function (req, res) {
     let db_connect = dbo.getDb()
     let agg = [
         {
@@ -53,6 +53,15 @@ boardRoutes.route("/:id").get(async function (req, res) {
         POSTS_LOOKUP,
     ]
     let results = await db_connect.collection("boards").aggregate(agg).next()
+    
+
+    for (let i of results.posts) {
+
+        if (i.author != req.session.user.name) {
+            i.shape.static = true
+        }
+    }
+
     res.json(results)
 })
 
@@ -60,9 +69,7 @@ boardRoutes.route("/:id").get(async function (req, res) {
 boardRoutes.post("/add", async function (req, res) {
     let db_connect = dbo.getDb()
 
-    //console.log("req: " + JSON.stringify(req.body));
-
-    // put req params into object
+ 
     let board = {
         name: req.body.name,
         posts: req.body.posts,
@@ -95,7 +102,6 @@ boardRoutes.post("/update/:id", async function (req, res) {
         .collection("boards")
         .updateOne(myquery, newvalues, function (err, response) {
             if (err) throw err
-            //console.log("1 document updated");
             res.json(response)
         })
 })
@@ -122,7 +128,6 @@ boardRoutes.post(
             })
             return
         }
-        console.log(req.params)
 
         let db_connect = dbo.getDb("corkboard")
 
@@ -130,7 +135,6 @@ boardRoutes.post(
             .collection("posts")
             .findOne({ _id: new ObjectId(req.body.id) })
         //find author of this post with id
-        console.log("found post: " + JSON.stringify(post))
 
         if (
             req.session.user.name !=
@@ -156,8 +160,6 @@ boardRoutes.post(
                 },
             }
         )
-
-        console.log("result: " + JSON.stringify(result))
         res.status(200).json(result.value)
     }
 )
