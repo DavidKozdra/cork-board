@@ -4,23 +4,20 @@ var userRoutes = express.Router()
 
 // This will help us connect to the database
 const dbo = require("../dbcon")
-const { default: session } = require("./ironSession")
+const { default: session } = require("./session")
 
 // This help convert the id from string to ObjectId for the _id.
 const ObjectId = require("mongodb").ObjectId
-
-
 
 // Collections:
 // users
 // boards
 // posts
 
-
 // This section will help you get a list of all the records.
 userRoutes.get("/", session, async function (req, res) {
-    if(req.session.user == undefined){
-        res.json({"error": "not logged in"})
+    if (req.session.user == undefined) {
+        res.json({ error: "not logged in" })
         res.status(500)
         express.redirect("/login")
         return
@@ -34,7 +31,6 @@ userRoutes.get("/", session, async function (req, res) {
             res.status(200).json(result)
         })
 })
-
 
 // This section will help you get a single record by id
 userRoutes.route("/:id").get(function (req, res) {
@@ -77,7 +73,7 @@ function validatePassword(password) {
 }
 
 // This section will help you create a new record.
-userRoutes.route("/add",session).post(function (req, res) {
+userRoutes.route("/add", session).post(function (req, res) {
     let db_connect = dbo.getDb()
 
     //console.log("req: " + JSON.stringify(req.body));

@@ -4,6 +4,7 @@
     "dotenv": "^16.0.0",
     "env": "^0.0.2",
     "express": "^4.17.3",
+    "iron-session": "^6.1.2",
     "mongodb": "^4.5.0",
     "nodemon": "^2.0.15",
     "socket.io": "^4.4.1"

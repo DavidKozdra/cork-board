@@ -4,10 +4,10 @@ var boardRoutes = express.Router()
 
 // This will help us connect to the database
 const dbo = require("../dbcon")
+const { default: session } = require("./session")
 
 // This help convert the id from string to ObjectId for the _id.
 const ObjectId = require("mongodb").ObjectId
-
 
 boardRoutes.use("/:id/posts", require("./posts"))
 
@@ -17,10 +17,10 @@ boardRoutes.use("/:id/posts", require("./posts"))
 // posts
 
 // This section will help you get a list of all the records.
-boardRoutes.route("/").get(function (req, res) {
-    if (session.user === undefined) {
+boardRoutes.get("/", session, function (req, res) {
+    if (req.session === undefined) {
         res.status(401).json({
-            message: "You are not logged in."
+            message: "You are not logged in.",
         })
         return
     }
