@@ -1,0 +1,9 @@
+services:
+  api:
+    build:
+      context: ./Server
+      dockerfile: Dockerfile
+      args:
+        - SECRET_COOKIE_PASSWORD=$SECRET_COOKIE_PASSWORD
+        - CORK_MONGO_IP=$CORK_MONGO_IP
+

@@ -1,0 +1,8 @@
+**/.git
+**.env
+**/node_modules
+**/.idea/
+**/.vscode
+.dockerignore
+Dockerfile*
+/Client/build/
