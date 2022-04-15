@@ -10,35 +10,36 @@ const { default: session } = require("../session")
 const ObjectId = require("mongodb").ObjectId
 
 // This section will login a user.
-AuthLoginRoute.get("/login", session, async function (req, res) {
+AuthLoginRoute.post("/login", session, async function (req, res) {
     let db_connect = dbo.getDb("corkboard")
-    let { name, password } = req.query
-    if (!name || !password) {
+    let { username, password } = req.body
+    if (!username || !password) {
         res.status(401)
         res.json({ error: "missing username or password" })
+        return
     }
     let userobj = await db_connect
         .collection("users")
-        .findOne({ name: name, password: password })
+        .findOne({ name: username, password: password })
     if (!userobj) {
+        res.status(401)
         res.json({ error: "user not found" })
-        res.status(500)
         return
     }
-    req.session.user = { name: userobj.name }
+    req.session.user = { username: userobj.name }
     await req.session.save()
-    res.redirect("/")
+    res.json({ isLoggedIn: !!req.session.user, ...req.session.user })
 })
 
 AuthLoginRoute.get("/session", session, async function (req, res) {
-    res.json({ loggedin: !!req.session.user , data: req.session })
+    res.json({ isLoggedIn: !!req.session.user, ...req.session.user })
 })
 
-AuthLoginRoute.get("/logout", session, async function (req, res) {
+AuthLoginRoute.post("/logout", session, async function (req, res) {
     if (req.session !== undefined) {
         req.session.destroy()
     }
-    res.json({ error: null })
+    res.json({ isLoggedIn: false })
 })
 
 module.exports = AuthLoginRoute

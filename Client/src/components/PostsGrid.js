@@ -1,18 +1,16 @@
 import GridLayout from "react-grid-layout"
 import React from "react"
+import httpPost from "../lib/httpPost"
 
 export function PostsGrid({ posts }) {
-
     function updatePos(updated) {
-            for (let l of updated) {
-                console.log(l)
-                fetch(`/api/boards/${1}/posts/${l.i}/updatepos`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id: l.i, gridData: l }),
-                })
-            }
-     }
+        for (let l of updated) {
+            httpPost(`/api/boards/${1}/posts/${l.i}/updatepos`, {
+                id: l.i,
+                gridData: l,
+            })
+        }
+    }
 
     return (
         <GridLayout

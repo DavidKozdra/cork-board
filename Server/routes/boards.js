@@ -42,7 +42,12 @@ boardRoutes.get("/", session, async function (req, res) {
 })
 
 // This section will help you get a single record by id
-boardRoutes.get("/:id",session,async function (req, res) {
+boardRoutes.get("/:id", session, async function (req, res) {
+    if (req.session?.user === undefined) {
+        res.json({})
+        return
+    }
+
     let db_connect = dbo.getDb()
     let agg = [
         {
@@ -53,11 +58,9 @@ boardRoutes.get("/:id",session,async function (req, res) {
         POSTS_LOOKUP,
     ]
     let results = await db_connect.collection("boards").aggregate(agg).next()
-    
 
     for (let i of results.posts) {
-
-        if (i.author != req.session.user.name) {
+        if (i.author !== req.session.user.username) {
             i.shape.static = true
         }
     }
@@ -69,7 +72,6 @@ boardRoutes.get("/:id",session,async function (req, res) {
 boardRoutes.post("/add", async function (req, res) {
     let db_connect = dbo.getDb()
 
- 
     let board = {
         name: req.body.name,
         posts: req.body.posts,
@@ -137,8 +139,8 @@ boardRoutes.post(
         //find author of this post with id
 
         if (
-            req.session.user.name !=
-            post.author /* && req.session.user.name != req.body.admin*/
+            req.session.user.username !==
+            post.author /* && req.session.user.username != req.body.admin*/
         ) {
             res.status(401).json({
                 message: "You are not authorized to do this.",

@@ -2,6 +2,7 @@ const { MongoClient } = require("mongodb")
 
 // Server path
 const url = "mongodb://" + process.env.CORK_MONGO_IP
+console.log("Connecting to MongoDB at " + url)
 
 // declare mongo client
 const client = new MongoClient(url, {
