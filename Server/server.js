@@ -11,13 +11,15 @@ app.use("/", require("./routes/routes.js"))
 
 const dbo = require("./dbcon")
 
-app.listen(port, () => {
+async function start() {
     // perform a database connection when server starts
-    dbo.connectToServer(function (err) {
-        if (err) console.error(err)
-    })
+    await dbo.connectToServer()
 
-    console.log(
-        `Success! Your application is running on port new connection ${port}.`
-    )
-})
+    app.listen(port, function () {
+        console.log(
+            `Success! Your application is running on port new connection ${port}.`
+        )
+    })
+}
+
+start()

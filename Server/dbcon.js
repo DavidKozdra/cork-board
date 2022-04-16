@@ -16,15 +16,12 @@ const dbname = "corkboard"
 var _db
 // TODO: Convert connectToServer to async/await so we can block until we have a db conn
 module.exports = {
-    connectToServer: function (callback) {
-        client.connect(function (err, db) {
-            // Verify we got a good "db" object
-            if (db) {
-                _db = db.db(dbname)
-                console.log("Successfully connected to MongoDB.")
-            }
-            return callback(err)
-        })
+    connectToServer: async function () {
+        let db = await client.connect()
+        if (db) {
+            _db = db.db(dbname)
+            console.log("Successfully connected to MongoDB.")
+        }
     },
 
     getDb: function () {
