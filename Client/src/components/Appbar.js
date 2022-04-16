@@ -101,7 +101,7 @@ export default function Appbar() {
                             <ProfileButton />
                         </>
                     ) : (
-                        <Link href="/login">Login</Link>
+                        <Link color="#fff" href="/login">Login</Link>
                     )}
                 </Toolbar>
             </AppBar>
