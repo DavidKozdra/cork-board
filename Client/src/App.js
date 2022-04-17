@@ -7,10 +7,15 @@ import "./App.css"
 import AllBoards from "./views/AllBoards"
 import BoardView from "./views/BoardView"
 
+import useUser from "./lib/useUser"
 import Appbar from "./components/Appbar"
 import Login from "./views/Login"
 import Register from "./views/Register"
 function App() {
+    useUser({
+        redirectTo: "/login",
+        redirectIfFound: false,
+    })
     return (
         <>
             <Router>
