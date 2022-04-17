@@ -11,14 +11,20 @@ import useUser from "./lib/useUser"
 import Appbar from "./components/Appbar"
 import Login from "./views/Login"
 import Register from "./views/Register"
-function App() {
+
+function ForceLogin() {
     useUser({
         redirectTo: "/login",
         redirectIfFound: false,
     })
+    return <></>
+}
+
+function App() {
     return (
         <>
             <Router>
+                <ForceLogin />
                 <Appbar />
                 <Switch>
                     <Route exact path="/">
