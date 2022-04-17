@@ -76,7 +76,7 @@ export default function RecipeReviewCard(props) {
             <MoreVertIcon />
           </IconButton>
         }
-        title={props.posts.author}
+        title={ props.posts.title+ " By "+ props.posts.author}
         subheader={ props.posts.date }
       />
       <CardMedia
@@ -87,7 +87,7 @@ export default function RecipeReviewCard(props) {
       />
       <CardContent>
         <Typography paragraph>
-            { props.posts.content }
+            { props.posts.body }
           </Typography>
       </CardContent>
       <CardActions disableSpacing>
