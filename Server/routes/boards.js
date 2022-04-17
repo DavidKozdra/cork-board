@@ -28,7 +28,7 @@ const POSTS_LOOKUP = {
 
 // This section will help you get a list of all the records.
 boardRoutes.get("/", session, async function (req, res) {
-    if (req.session === undefined) {
+    if (req.session === undefined || req.session.user?.username === undefined) {
         res.status(401).json({
             message: "You are not logged in.",
         })
