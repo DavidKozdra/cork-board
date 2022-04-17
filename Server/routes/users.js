@@ -44,7 +44,22 @@ userRoutes.route("/:id").get(function (req, res) {
 
 // Validation functions
 function validateName(name) {
-    if (name.length > 64 || name.length < 8) return false
+
+    // check if user exists
+    let db_connect = dbo.getDb()
+    let myquery = { name: name }
+    db_connect.collection("users").findOne(myquery, function (err, result) {
+        if (err) throw err
+        if (result) {
+            return false
+        } else {
+            return true
+        }
+    })
+
+
+    if (name.length > 64 || name.length < 3) return false
+
     return true
 }
 
@@ -53,6 +68,18 @@ function validateEmail(email) {
     var emailRegex = new RegExp(
         "([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=?A-Z^-~-]+)*|\"([]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=?A-Z^-~-]+)*|[[\t -Z^-~]*])"
     )
+    
+    // if email is used by another user
+    let db_connect = dbo.getDb()
+    let myquery = { email: email }
+    db_connect.collection("users").findOne(myquery, function (err, result) {
+        if (err) throw err
+        if (result) {
+            return false
+        } else {
+            return true
+        }
+    })
 
     if (!email.includes(".")) return false
 

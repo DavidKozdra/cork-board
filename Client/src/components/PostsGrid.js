@@ -23,7 +23,7 @@ export function PostsGrid({ posts }) {
             onResizeStop={updatePos}
             compactType={null}
         >
-            {posts.map((post) => {
+            {(posts??[]).map((post) => {
                 let grid = {
                     ...post.shape,
                     minW: 1,

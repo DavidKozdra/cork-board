@@ -59,6 +59,8 @@ export default function Register() {
             return
         }
         mutateUser(data)
+
+        //Jackson redirect here
     }
 
     return (
