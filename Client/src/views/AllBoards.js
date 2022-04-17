@@ -43,7 +43,7 @@ export default function AllBoards() {
                             let response = await httpPost(`/api/boards/add`, {
                                 name: "aaaa",
                                 posts: [],
-                                users: [],
+                                users: [user.username],
                                 admin: user.username,
                                 settings: {},
                             }).then((body) => body.json())
@@ -57,14 +57,7 @@ export default function AllBoards() {
                         +
                     </IconButton>
 
-                    
                     <BasicModal></BasicModal>
-
-
-
-
-                    
-
                 </ul>
             </Box>
         </>
@@ -73,43 +66,39 @@ export default function AllBoards() {
 
 //modals for me
 
-
 const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
     width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
+    bgcolor: "background.paper",
+    border: "2px solid #000",
     boxShadow: 24,
     p: 4,
-  };
-
-
-function BasicModal() {
-    const [open,setOpen] = React.useState(false);
-
-  
-    return (
-      <div>
-        <IconButton onClick={()=>setOpen(true)}>Open modal</IconButton>
-        <Modal
-          open={open}
-          onClose={()=>setOpen(false)}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title">
-              Text in a modal
-            </Typography>
-            <Typography id="modal-modal-description">
-              More text in a modal
-            </Typography>
-          </Box>
-        </Modal>
-      </div>
-    );
 }
 
+function BasicModal() {
+    const [open, setOpen] = React.useState(false)
+
+    return (
+        <div>
+            <IconButton onClick={() => setOpen(true)}>Open modal</IconButton>
+            <Modal
+                open={open}
+                onClose={() => setOpen(false)}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Typography id="modal-modal-title">
+                        Text in a modal
+                    </Typography>
+                    <Typography id="modal-modal-description">
+                        More text in a modal
+                    </Typography>
+                </Box>
+            </Modal>
+        </div>
+    )
+}

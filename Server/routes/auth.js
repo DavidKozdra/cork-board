@@ -20,13 +20,13 @@ AuthLoginRoute.post("/login", session, async function (req, res) {
     }
     let userobj = await db_connect
         .collection("users")
-        .findOne({ name: username, password: password })
+        .findOne({ username: username, password: password })
     if (!userobj) {
         res.status(401)
         res.json({ error: "user not found" })
         return
     }
-    req.session.user = { username: userobj.name }
+    req.session.user = { username: userobj.username }
     await req.session.save()
     res.json({ isLoggedIn: !!req.session.user, ...req.session.user })
 })

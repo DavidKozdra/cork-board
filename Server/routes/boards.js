@@ -11,7 +11,6 @@ const ObjectId = require("mongodb").ObjectId
 
 boardRoutes.use("/:id/posts", require("./posts"))
 
-
 // Collections:
 // users
 // boards
@@ -40,7 +39,7 @@ boardRoutes.get("/", session, async function (req, res) {
         {
             $match: {
                 users: { $in: [req.session.user.username] },
-            }
+            },
         },
         POSTS_LOOKUP,
     ]
@@ -75,8 +74,6 @@ boardRoutes.get("/:id", session, async function (req, res) {
 
     res.json(results)
 })
-
-
 
 // This section will help you create a new record.
 boardRoutes.post("/add", async function (req, res) {
@@ -131,7 +128,7 @@ boardRoutes.post("/remove/:id", async function (req, response) {
 
 // This section will help you get a list of all the records.
 boardRoutes.post(
-    "/:id/posts/:postid/updatepos",
+    "/:id/posts/:postid/updatepost",
     session,
     async function (req, res) {
         if (req.session === undefined) {
