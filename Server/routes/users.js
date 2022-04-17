@@ -43,11 +43,11 @@ userRoutes.route("/:id").get(function (req, res) {
 })
 
 // Validation functions
-function validateName(name) {
+function validateName(username) {
 
     // check if user exists
     let db_connect = dbo.getDb()
-    let myquery = { name: name }
+    let myquery = { username: username }
     db_connect.collection("users").findOne(myquery, function (err, result) {
         if (err) throw err
         if (result) {
@@ -58,7 +58,7 @@ function validateName(name) {
     })
 
 
-    if (name.length > 64 || name.length < 3) return false
+    if (username.length > 64 || username.length < 3) return false
 
     return true
 }
@@ -117,7 +117,7 @@ userRoutes.post("/add", session,function (req, res) {
     }
     // validation
     if (!validateName(userObj.username))
-        return res.status(401).send("error: name invalid")
+        return res.status(401).send("error: username invalid")
     if (!validateEmail(userObj.email))
         return res.status(401).send("error: email invalid")
     if (!validatePassword(userObj.password))
@@ -136,7 +136,7 @@ userRoutes.route("/update/:id").post(function (req, res) {
     let myquery = { _id: ObjectId(req.params.id) }
     let newvalues = {
         $set: {
-            name: req.body.name,
+            username: req.body.username,
             profile_pic: req.body.profile_pic,
             email: req.body.email,
             password: req.body.password,
