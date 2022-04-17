@@ -73,25 +73,25 @@ function validatePassword(password) {
 }
 
 // This section will help you create a new record.
-userRoutes.route("/add", session).post(function (req, res) {
+userRoutes.post("/add", session,function (req, res) {
     let db_connect = dbo.getDb()
 
     //console.log("req: " + JSON.stringify(req.body));
 
     // put req params into object
     let userObj = {
-        name: req.body.name,
+        username: req.body.username,
         profile_pic: req.body.profile_pic,
         email: req.body.email,
         password: req.body.password,
     }
     // validation
-    if (!validateName(userObj.name))
-        return res.status(500).send("error: name invalid")
+    if (!validateName(userObj.username))
+        return res.status(401).send("error: name invalid")
     if (!validateEmail(userObj.email))
-        return res.status(500).send("error: email invalid")
+        return res.status(401).send("error: email invalid")
     if (!validatePassword(userObj.password))
-        return res.status(500).send("error: password invalid")
+        return res.status(401).send("error: password invalid")
 
     // insert user into database
     db_connect.collection("users").insertOne(userObj, function (err, response) {

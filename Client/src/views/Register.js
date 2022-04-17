@@ -48,7 +48,7 @@ export default function Register() {
     const handleSubmit = async (event) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
-        let data = await httpPost("/api/user/add", {
+        let data = await httpPost("/api/users/add", {
             username: formData.get("username"),
             password: formData.get("password"),
             email: formData.get("email"),
@@ -61,7 +61,6 @@ export default function Register() {
         mutateUser(data)
     }
 
-    console.log("Test")
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
@@ -131,7 +130,7 @@ export default function Register() {
                         <Grid container>
                             <Grid item>
                                 <Link  component={RouterLink}
-                                    to={`/Login`}>
+                                    to={`/login`}>
                                     {"Already have an account? Login"}
                                 </Link>
                             </Grid>

@@ -9,7 +9,7 @@ import BoardView from "./views/BoardView"
 
 import Appbar from "./components/Appbar"
 import Login from "./views/Login"
-
+import Register from "./views/Register"
 function App() {
     return (
         <>
@@ -24,6 +24,10 @@ function App() {
                     </Route>
                     <Route path="/login">
                         <Login />
+                    </Route>
+
+                    <Route path="/register">
+                        <Register />
                     </Route>
                 </Switch>
             </Router>

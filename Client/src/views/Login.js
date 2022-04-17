@@ -123,7 +123,7 @@ export default function Login() {
                             </Grid>
                             <Grid item>
                                 <Link  component={RouterLink}
-                                    to={`/Register`}>
+                                    to={`/register`}>
                                     {"Don't have an account? Sign Up"}
                                 </Link>
                             </Grid>
