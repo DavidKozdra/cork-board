@@ -36,7 +36,14 @@ boardRoutes.get("/", session, async function (req, res) {
     }
     let db_connect = dbo.getDb("corkboard")
 
-    let agg = [POSTS_LOOKUP]
+    let agg = [
+        {
+            $match: {
+                users: { $in: [req.session.user.username] },
+            }
+        },
+        POSTS_LOOKUP,
+    ]
 
     let results = await db_connect.collection("boards").aggregate(agg).toArray()
     res.status(200).json(results)
