@@ -1,11 +1,20 @@
 import useSWR from "swr"
-import { Box, Link, IconButton, Modal, Button, Typography } from "@mui/material"
+import {
+    Box,
+    Link,
+    IconButton,
+    Modal,
+    Button,
+    Typography,
+    TextField,
+} from "@mui/material"
 import { Link as RouterLink } from "react-router-dom"
 import React from "react"
 import BoardDisplayCard from "../components/BoardDisplayCard"
 import { createTheme, ThemeProvider } from "@mui/material/styles"
 import useUser from "../lib/useUser"
 import httpPost from "../lib/httpPost"
+import { Add } from "@mui/icons-material"
 
 const theme = createTheme()
 export default function AllBoards() {
@@ -44,7 +53,6 @@ export default function AllBoards() {
                                 name: "aaaa",
                                 posts: [],
                                 users: [user.username],
-                                admin: user.username,
                                 settings: {},
                             }).then((body) => body.json())
 
@@ -83,7 +91,14 @@ function BasicModal() {
 
     return (
         <div>
-            <IconButton onClick={() => setOpen(true)}>Open modal</IconButton>
+            <Button
+                variant="contained"
+                color="primary"
+                endIcon={<Add />}
+                onClick={() => setOpen(true)}
+            >
+                Open Modal
+            </Button>
             <Modal
                 open={open}
                 onClose={() => setOpen(false)}

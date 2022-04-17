@@ -76,14 +76,20 @@ boardRoutes.get("/:id", session, async function (req, res) {
 })
 
 // This section will help you create a new record.
-boardRoutes.post("/add", async function (req, res) {
+boardRoutes.post("/add", session, async function (req, res) {
     let db_connect = dbo.getDb()
+
+    if (req.session?.user === undefined) {
+        res.status(401)
+        res.json({})
+        return
+    }
 
     let board = {
         name: req.body.name,
         posts: req.body.posts,
         users: req.body.users,
-        admin: req.body.admin,
+        admin: req.session.user.username,
         settings: req.body.settings,
     }
 

@@ -72,6 +72,9 @@ function validateEmail(email) {
     // if email is used by another user
     let db_connect = dbo.getDb()
     let myquery = { email: email }
+
+    //TODO make this async
+
     db_connect.collection("users").findOne(myquery, function (err, result) {
         if (err) throw err
         if (result) {

@@ -61,6 +61,7 @@ export default function Register() {
         }
         mutateUser(data)
         //Jackson redirect here and make sure this is the user session
+        
     }
 
     return (
