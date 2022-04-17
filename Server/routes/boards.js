@@ -94,10 +94,26 @@ boardRoutes.post("/add", async function (req, res) {
     })
 })
 
+function validateBoardName(name) {
+    if (name === "undefined") return "Board Update Error: name is undefined"
+
+    if (typeof name !== "string")
+        return "Board Update Error: name is not a string"
+
+    // arbitrary values
+    if (name > 100 || name < 1) return "Board Update Error: name is undefined"
+    return true
+}
+
 // This section will help you update a record by id.
 boardRoutes.post("/update/:id", async function (req, res) {
     let db_connect = dbo.getDb()
     let myquery = { _id: new ObjectId(req.params.id) }
+
+    let retVal = validateBoardName(req.body.name)
+
+    if (retVal !== true) return res.status(500).send(retVal)
+
     let newvalues = {
         $set: {
             name: req.body.name,

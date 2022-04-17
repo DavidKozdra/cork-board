@@ -1,85 +1,174 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { PostsGrid } from './PostsGrid';
-import useUser from "../lib/useUser";
+import * as React from "react"
+import Box from "@mui/material/Box"
+import Card from "@mui/material/Card"
+import CardActions from "@mui/material/CardActions"
+import CardContent from "@mui/material/CardContent"
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    TextField,
+} from "@mui/material"
+import { useRef } from "react"
+import Button from "@mui/material/Button"
+import Typography from "@mui/material/Typography"
+import { Modal } from "@mui/material"
+import { PostsGrid } from "./PostsGrid"
+import useUser from "../lib/useUser"
 import { useState } from "react"
 import httpPost from "../lib/httpPost"
-import { useSWRConfig } from 'swr';
-
+import { useSWRConfig } from "swr"
+import { Edit } from "@mui/icons-material"
+import { Link } from "react-router-dom"
 
 const bull = (
-  <Box
-    component="span"
-    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-  >
-    •
-  </Box>
-);
+    <Box
+        component="span"
+        sx={{ display: "inline-block", mx: "2px", transform: "scale(0.8)" }}
+    >
+        •
+    </Box>
+)
 
 export default function BoardDisplayCard({ board }) {
-  const { mutate }= useSWRConfig()
+    const { mutate } = useSWRConfig()
 
-  let { mutateUser } = useUser({
-    redirectTo: "/",
-    redirectIfFound: true,
-  })
-  
-  const handleRemove = async (event) => {
-    event.preventDefault()
-    // const formData = new FormData(event.currentTarget)
-    let data = await httpPost(`/api/boards/remove/${board._id}`).then((body) => body.json())
-    if (data.error) {
-      setErrorMsg(data.error)
-      return
-    }
-    mutate(`/api/boards`, (boards) => {
-      return boards.filter((x)=>x._id !==board._id)
+    let [errorMsg, setErrorMsg] = useState("")
+
+    let { mutateUser } = useUser({
+        redirectTo: "/",
+        redirectIfFound: true,
     })
-    // mutate('/api/boards', data)
-  }
-  
-  const handleEdit = async (event) => {
-    event.preventDefault()
-    const formData = new FormData(event.currentTarget)
-    let data = await httpPost(`/api/board/update/${board.id}`, {
-    }).then((body) => body.json())
-    if (data.error) {
-        setErrorMsg(data.error)
-        return
+
+    const handleRemove = async (event) => {
+        event.preventDefault()
+        // const formData = new FormData(event.currentTarget)
+        let data = await httpPost(`/api/boards/remove/${board._id}`).then(
+            (body) => body.json()
+        )
+        if (data.error) {
+            setErrorMsg(data.error)
+            return
+        }
+        mutate(`/api/boards`, (boards) => {
+            return boards.filter((x) => x._id !== board._id)
+        })
+        // mutate('/api/boards', data)
     }
-}
-  let [errorMsg, setErrorMsg] = useState("");
-  var {user} = useUser();
-  return (
-    <Card sx={{ minWidth: 275 }}>
-      <CardContent>
-        <Typography sx={{ fontSize: 21 }} color="text.secondary" gutterBottom>
-            {board.name }
-        </Typography>
-              <Typography sx={{ fontSize: 14}} color="text.secondary" gutterBottom>
-          {"managed by - " + board.admin}
-          {"\n" + board.posts.length + "  posts"}
-        </Typography>
-        {
-        /*
+
+    function handleChange(event) {
+        mutate(`/api/boards`, (boards) => {
+            return boards
+        })
+    }
+    var { user } = useUser()
+    return (
+        <Card sx={{ minWidth: 275 }}>
+            <CardContent>
+                <Typography
+                    sx={{ fontSize: 21 }}
+                    color="text.secondary"
+                    gutterBottom
+                >
+                    {board.name}
+                </Typography>
+                <Typography
+                    sx={{ fontSize: 14 }}
+                    color="text.secondary"
+                    gutterBottom
+                >
+                    {"managed by - " + board.admin}
+                    {"\n" + board.posts.length + "  posts"}
+                </Typography>
+                {/*
         <PostsGrid posts={props.posts} style={{ "transform": "scale(.3)" }}>
         </PostsGrid>
-        */
+        */}
+            </CardContent>
+            <CardActions>
+                <Button size="small">
+                    <Link to={`/board/${board._id}`}>View</Link>
+                </Button>
+
+                {user.username === board.admin ? (
+                    <EditModal board={board} onChange={handleChange} />
+                ) : (
+                    <></>
+                )}
+                {user.username === board.admin ? (
+                    <Button size="small" onClick={handleRemove}>
+                        {" "}
+                        Remove{" "}
+                    </Button>
+                ) : (
+                    <></>
+                )}
+            </CardActions>
+        </Card>
+    )
+}
+
+// TODO: This definitely needs to be cleaned up
+// hacked together for now
+
+function EditModal({ board, onChange }) {
+    const [open, setOpen] = React.useState(false)
+    let [errorMsg, setErrorMsg] = useState("")
+
+    const valueRef = useRef("")
+
+    function handleChange(event) {
+        onChange(event)
+    }
+
+    const handleEdit = async (event) => {
+        if (valueRef === undefined) return
+        let values = {
+            name: valueRef.current.value,
+            posts: board.posts,
+            users: board.users,
+            admin: board.admin,
+            settings: board.settings,
         }
-      </CardContent>
-      <CardActions>
-        <Button size="small"> View </Button>
+        let data = await httpPost(`/api/boards/update/${board._id}`, values)
+        if (data.error) {
+            setErrorMsg(data.error)
+            return
+        }
+        handleChange(event)
+        setOpen(false)
+    }
 
-        
-        {(user.username === board.admin) ? <Button size="small" onClick={handleEdit}> Edit </Button> : <></>}
-        {(user.username === board.admin) ? <Button size="small" onClick={handleRemove}> Remove </Button> : <></>}
-      </CardActions>
-
-    </Card>
-  );
+    return (
+        <div>
+            <Button onClick={() => setOpen(true)}>Edit modal</Button>
+            <Dialog open={open} onClose={() => setOpen(false)}>
+                <DialogTitle>Edit Board</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Edit the board name</DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Board Name"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        inputRef={valueRef}
+                    />
+                    {errorMsg ? (
+                        <Typography color="error">{errorMsg}</Typography>
+                    ) : (
+                        <></>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleEdit}>Submit</Button>
+                </DialogActions>
+            </Dialog>
+        </div>
+    )
 }
