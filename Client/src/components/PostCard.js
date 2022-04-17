@@ -15,6 +15,9 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
+import httpPost from "../lib/httpPost"
+
+
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
@@ -32,6 +35,33 @@ export default function RecipeReviewCard(props) {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  /*
+  const handleRemove = async (event) => {
+    event.preventDefault()
+    // const formData = new FormData(event.currentTarget)
+    let data = await httpPost(`/api/boards/remove/${post._id}`).then((body) => body.json())
+    if (data.error) {
+      setErrorMsg(data.error)
+      return
+    }
+    mutate(`/api/boards`, (post) => {
+      return post.filter((x)=>x._id !==post._id)
+    })
+    // mutate('/api/boards', data)
+  }
+  
+  const handleEdit = async (event) => {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    let data = await httpPost(`/api/board/update/${board.id}`, {
+    }).then((body) => body.json())
+    if (data.error) {
+        setErrorMsg(data.error)
+        return
+    }
+}
+*/
 
   return (
     <Card sx={{ maxWidth: props.maxWidth }}>
@@ -75,6 +105,12 @@ export default function RecipeReviewCard(props) {
         >
           <ExpandMoreIcon />
         </ExpandMore>
+
+        
+        {/*(user.username === post.author) ? <Button size="small" onClick={handleEdit}> Edit </Button> : <></>*/}
+        
+        {/*(user.username === post.author) ? <Button size="small" onClick={handleRemove}> Edit </Button> : <></>*/}
+
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>

@@ -16,7 +16,7 @@ import useUser from "../lib/useUser"
 import httpPost from "../lib/httpPost"
 import { useState } from "react"
 
-import { Link as RouterLink, useLocation } from "react-router-dom"
+import { Link as RouterLink, Redirect, useHistory, useLocation } from "react-router-dom"
 
 function Copyright(props) {
     return (
@@ -35,6 +35,7 @@ function Copyright(props) {
         </Typography>
     )
 }
+
 
 const theme = createTheme()
 
@@ -59,8 +60,7 @@ export default function Register() {
             return
         }
         mutateUser(data)
-
-        //Jackson redirect here
+        //Jackson redirect here and make sure this is the user session
     }
 
     return (
@@ -79,7 +79,7 @@ export default function Register() {
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign in
+                        Make new account
                     </Typography>
                     <Box
                         component="form"
@@ -127,7 +127,7 @@ export default function Register() {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign In
+                            Join Corkboard
                         </Button>
                         <Grid container>
                             <Grid item>
