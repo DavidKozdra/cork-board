@@ -32,16 +32,18 @@ export default function AllBoards() {
                     {boards.map((board) => {
                         return (
                             <div key={board._id}>
+                                {/*
+                                    Temporarily removed this for testing, maybe can add back after
                                 <Link
                                     component={RouterLink}
                                     to={`/board/${board._id}`}
-                                >
-                                    <BoardDisplayCard
-                                        board={board}
-                                    ></BoardDisplayCard>
+                                > */}
+                                <BoardDisplayCard
+                                    board={board}
+                                ></BoardDisplayCard>
 
-                                    {/* Add Post Grid here also :( */}
-                                </Link>
+                                {/* Add Post Grid here also :( */}
+                                {/* </Link> */}
                             </div>
                         )
                     })}
