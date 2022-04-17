@@ -1,6 +1,7 @@
 import GridLayout from "react-grid-layout"
 import React from "react"
 import httpPost from "../lib/httpPost"
+import PostCard from "./PostCard"
 
 export function PostsGrid({ posts }) {
     function updatePos(updated) {
@@ -32,13 +33,17 @@ export function PostsGrid({ posts }) {
                 }
 
                 return (
-                    <div key={post._id} data-grid={grid}>
-                        <h3>{post.title}</h3>
-                        <p>{post.body}</p>
-                        <small>
-                            By <strong>{post.author}</strong>
-                        </small>
+                    <div style={{fontSize: "5%"}} key={post._id} data-grid={grid}>
+
+                        <PostCard posts={post} title={post.title} content={post.body} author={post.author} MaxWidth={ grid.maxW}>
+                            
+                            
+                        </PostCard>
+
+
                     </div>
+
+        
                 )
             })}
         </GridLayout>

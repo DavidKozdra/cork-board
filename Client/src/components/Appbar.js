@@ -15,6 +15,8 @@ import { ArrowBack, Person } from "@mui/icons-material"
 import { useState } from "react"
 import httpPost from "../lib/httpPost"
 
+
+
 function ProfileButton() {
     const { mutateUser } = useUser()
     const [anchorEl, setAnchorEl] = useState(null)
@@ -91,7 +93,10 @@ export default function Appbar() {
                         component="div"
                         sx={{ flexGrow: 1 }}
                     >
+                        <Link style={{"color":"white"}}  component={RouterLink}
+                                    to={`/`}>
                         Corkboard
+                        </Link>
                     </Typography>
                     {user?.isLoggedIn ? (
                         <>

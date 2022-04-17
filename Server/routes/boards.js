@@ -11,6 +11,7 @@ const ObjectId = require("mongodb").ObjectId
 
 boardRoutes.use("/:id/posts", require("./posts"))
 
+
 // Collections:
 // users
 // boards
@@ -68,6 +69,8 @@ boardRoutes.get("/:id", session, async function (req, res) {
     res.json(results)
 })
 
+
+
 // This section will help you create a new record.
 boardRoutes.post("/add", async function (req, res) {
     let db_connect = dbo.getDb()
@@ -109,7 +112,7 @@ boardRoutes.post("/update/:id", async function (req, res) {
 })
 
 // This section will help you delete a record
-boardRoutes.delete("/remove/:id", async function (req, response) {
+boardRoutes.post("/remove/:id", async function (req, response) {
     let db_connect = dbo.getDb()
     let myquery = { _id: new ObjectId(req.params.id) }
     db_connect.collection("boards").deleteOne(myquery, function (err, obj) {

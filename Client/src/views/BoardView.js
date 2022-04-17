@@ -25,7 +25,10 @@ export default function BoardView() {
                     pb: 6,
                 }}
             >
-                <Container>{body}</Container>
+
+            
+
+            <Container>{body}</Container>
             </Box>
         </>
     )

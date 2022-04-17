@@ -16,6 +16,8 @@ import useUser from "../lib/useUser"
 import httpPost from "../lib/httpPost"
 import { useState } from "react"
 
+import { Link as RouterLink, useLocation } from "react-router-dom"
+
 function Copyright(props) {
     return (
         <Typography
@@ -100,12 +102,6 @@ export default function Login() {
                             id="password"
                             autoComplete="current-password"
                         />
-                        <FormControlLabel
-                            control={
-                                <Checkbox value="remember" color="primary" />
-                            }
-                            label="Remember me"
-                        />
                         {errorMsg ? (
                             <Typography color="error">{errorMsg}</Typography>
                         ) : (
@@ -126,7 +122,8 @@ export default function Login() {
                                 </Link>
                             </Grid>
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link  component={RouterLink}
+                                    to={`/Register`}>
                                     {"Don't have an account? Sign Up"}
                                 </Link>
                             </Grid>

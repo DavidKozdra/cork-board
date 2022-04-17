@@ -35,6 +35,8 @@ postRoutes.route("/:id").get(function (req, res) {
     })
 })
 
+
+
 // This section will help you create a new record.
 postRoutes.route("/add").post(function (req, res) {
     let db_connect = dbo.getDb()
@@ -73,6 +75,7 @@ postRoutes.route("/update/:id").post(function (req, res) {
         },
     }
 
+    
     db_connect
         .collection("posts")
         .updateOne(myquery, newvalues, function (err, response) {

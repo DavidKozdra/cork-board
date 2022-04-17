@@ -17,7 +17,7 @@ function App() {
                 <Appbar />
                 <Switch>
                     <Route exact path="/">
-                        <AllBoards />
+                        <AllBoards/>
                     </Route>
                     <Route path="/board/:id">
                         <BoardView />
