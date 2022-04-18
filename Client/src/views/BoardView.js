@@ -69,8 +69,8 @@ const style = {
 }
 
 function AddPostModal() {
-    // let { user } = useUser()
-    // const { data: boards, error, mutate: mutateBoards } = useSWR("/api/boards")
+    let { user } = useUser()
+    const { data: posts, error, mutate: mutatePosts } = useSWR("/api/posts")
 
     // modal
     const [open, setOpen] = React.useState(false)
@@ -81,12 +81,10 @@ function AddPostModal() {
     // date picker
     const [value, setValue] = React.useState(new Date())
 
-
     // currently storing in unix time
     const handleChange = (newValue) => {
         setValue(newValue)
     }
-
 
     /* TODO: need to check the expiration date being unix time vs other format
     // handle pictures
@@ -96,8 +94,6 @@ function AddPostModal() {
     */
     const handleSubmit = async (event) => {
         event.preventDefault()
-        console.log("event: " + event)
-        console.log("event.currentTarget: " + event.currentTarget)
         const formData = new FormData(event.currentTarget)
 
         // console.log("name: " + formData.get("PostName"));
@@ -112,10 +108,8 @@ function AddPostModal() {
             expiration: 0,
         }
 
-        if(selected)
-            data.expiration = value
-        else
-            data.expiration = undefined
+        if (selected) data.expiration = value
+        else data.expiration = undefined
 
         // Object.keys(obj).forEach(key => obj[key] === undefined ? delete obj[key] : {});
 
@@ -128,15 +122,16 @@ function AddPostModal() {
         //     expiration: req.body.expiration,
         // }
 
-        let response = await httpPost(`/api/posts/add`, data).then((body) => body.json())
+        let response = await httpPost(`/api/posts/add`, data).then((body) =>
+            body.json()
+        )
 
-        // let newBoard = await fetch(
-        //     `/api/boards/${response.insertedId}`
+        // let newPost = await fetch(
+        //     `/api/posts/${response.insertedId}`
         // ).then((body) => body.json())
-        // mutateBoards([...boards, newBoard])
+        // mutatePosts([...posts, newPost])
         setOpen(false)
     }
-
 
     return (
         <div>
