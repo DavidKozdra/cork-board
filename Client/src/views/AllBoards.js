@@ -17,6 +17,9 @@ import httpPost from "../lib/httpPost"
 import { Add } from "@mui/icons-material"
 
 const theme = createTheme()
+
+var boord = "New-Board"
+
 export default function AllBoards() {
     let { user } = useUser()
     // let { mutate } = useSWRConfig()
@@ -48,25 +51,8 @@ export default function AllBoards() {
                         )
                     })}
 
-                    <ThemeProvider theme={theme}></ThemeProvider>
-                    <IconButton
-                        onClick={async () => {
-                            let response = await httpPost(`/api/boards/add`, {
-                                name: "aaaa",
-                                posts: [],
-                                users: [user.username],
-                                settings: {},
-                            }).then((body) => body.json())
 
-                            let newBoard = await fetch(
-                                `/api/boards/${response.insertedId}`
-                            ).then((body) => body.json())
-                            mutateBoards([...boards, newBoard])
-                        }}
-                    >
-                        +
-                    </IconButton>
-
+                    <Typography><br /></Typography>
                     <BasicModal></BasicModal>
                 </ul>
             </Box>
@@ -89,6 +75,32 @@ const style = {
 }
 
 function BasicModal() {
+    
+    let { user } = useUser()
+    const { data: boards, error, mutate: mutateBoards } = useSWR("/api/boards")
+
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+        const formData = new FormData(event.currentTarget)
+        console.log(formData)
+        
+        boord = formData.get("BoardName");
+
+        let response = await httpPost(`/api/boards/add`, {
+            name: boord,
+            posts: [],
+            users: [user.username],
+            settings: {},
+        }).then((body) => body.json())
+
+        let newBoard = await fetch(
+            `/api/boards/${response.insertedId}`
+        ).then((body) => body.json())
+        mutateBoards([...boards, newBoard])        
+        setOpen(false)
+    }
+    
+    
     const [open, setOpen] = React.useState(false)
 
     return (
@@ -107,13 +119,34 @@ function BasicModal() {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={style}>
-                    <Typography id="modal-modal-title">
-                        Text in a modal
+                <Box sx={style}
+                component="form"
+                onSubmit={handleSubmit}
+                noValidate
+                >
+                    <Typography>
+                        Create a Board!
                     </Typography>
-                    <Typography id="modal-modal-description">
-                        More text in a modal
+
+                    <TextField
+                        id="BoardName"
+                        label="BoardName"
+                        name="BoardName"
+                        required
+                    >
+                    </TextField>
+
+                    <Typography> 
+                        <br />
                     </Typography>
+                    
+                    <Button 
+                        type="submit"
+                        variant="contained"
+                        color="primary">   
+                     Create New Board   
+                    </Button>
+
                 </Box>
             </Modal>
         </div>

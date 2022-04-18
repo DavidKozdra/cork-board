@@ -2,6 +2,8 @@ var express = require("express")
 
 var userRoutes = express.Router()
 
+
+const bcrypt = require('bcrypt'); 
 // This will help us connect to the database
 const dbo = require("../dbcon")
 const { default: session } = require("../session")
@@ -103,17 +105,27 @@ function validatePassword(password) {
 }
 
 // This section will help you create a new record.
-userRoutes.post("/add", session,function (req, res) {
+userRoutes.post("/add", session,async function (req, res) {
     let db_connect = dbo.getDb()
 
-    //console.log("req: " + JSON.stringify(req.body));
+        //console.log("req: " + JSON.stringify(req.body));
 
-    // put req params into object
+    let hash;
+    try {
+        hash = await bcrypt.hash(req.body.password, saltRounds);
+
+
+    } catch (err) { 
+        res.json({ error: err })
+        res.status(500)
+        return
+    }
+    
     let userObj = {
         username: req.body.username,
         profile_pic: req.body.profile_pic,
         email: req.body.email,
-        password: req.body.password,
+        password: hash,
     }
     // validation
     if (!validateName(userObj.username))

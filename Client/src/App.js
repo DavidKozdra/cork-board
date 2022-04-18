@@ -12,6 +12,8 @@ import Appbar from "./components/Appbar"
 import Login from "./views/Login"
 import Register from "./views/Register"
 
+import Profile from "./views/Profile"
+
 function ForceLogin() {
     useUser({
         redirectTo: "/login",
@@ -39,6 +41,10 @@ function App() {
 
                     <Route path="/register">
                         <Register />
+                    </Route>
+
+                    <Route path="/profile">
+                        <Profile />
                     </Route>
                 </Switch>
             </Router>

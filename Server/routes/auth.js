@@ -1,7 +1,8 @@
 var express = require("express")
 
 var AuthLoginRoute = express.Router()
-
+const bcrypt = require('bcrypt'); 
+const saltRounds = 10;         
 // This will help us connect to the database
 const dbo = require("../dbcon")
 const { default: session } = require("../session")
@@ -18,14 +19,26 @@ AuthLoginRoute.post("/login", session, async function (req, res) {
         res.json({ error: "missing username or password" })
         return
     }
+
     let userobj = await db_connect
         .collection("users")
-        .findOne({ username: username, password: password })
+        .findOne({ username: username  })
     if (!userobj) {
         res.status(401)
         res.json({ error: "user not found" })
         return
     }
+    hash = userobj.password;
+    let result;
+
+    try { 
+        result = await bcrypt.compare(req.body.password, hash);
+    } catch { 
+                res.status(401)
+                res.json({ error: "password does not match" })
+                return
+    }
+
     req.session.user = { username: userobj.username }
     await req.session.save()
     res.json({ isLoggedIn: !!req.session.user, ...req.session.user })

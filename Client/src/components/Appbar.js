@@ -55,7 +55,12 @@ function ProfileButton() {
                     horizontal: "left",
                 }}
             >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                <MenuItem id="profile">
+                <Link  component={RouterLink}
+                                    to={`/profile`}>
+                                    {"Profile"}
+                </Link>
+                </MenuItem>
                 <MenuItem id="logout-button" onClick={handleClose}>
                     Logout
                 </MenuItem>
