@@ -143,9 +143,31 @@ userRoutes.post("/add", session,async function (req, res) {
 })
 
 // This section will help you update a record by id.
-userRoutes.route("/update/:id").post(function (req, res) {
+userRoutes.get("/update", session, async function (req, res) {
+    if (req.session === undefined || req.session.user?.username === undefined) {
+        res.status(401).json({
+            message: "You are not logged in.",
+        })
+        return
+    }
     let db_connect = dbo.getDb()
-    let myquery = { _id: ObjectId(req.params.id) }
+    let myquery = { _id: ObjectId(req.session.user.username) }
+
+    // validation for new values
+    if (req.body.username) {
+        if (!validateName(req.body.username))
+            return res.status(401).send("error: username invalid")
+    }
+    if (req.body.email) {
+        if (!validateEmail(req.body.email))
+            return res.status(401).send("error: email invalid")
+    }
+    if (req.body.password) {
+        if (!validatePassword(req.body.password))
+            return res.status(401).send("error: password invalid")
+    }
+
+
     let newvalues = {
         $set: {
             username: req.body.username,
@@ -164,7 +186,7 @@ userRoutes.route("/update/:id").post(function (req, res) {
 })
 
 // This section will help you delete a record
-userRoutes.route("/remove/:id").delete((req, response) => {
+userRoutes.route("/remove").delete((req, response) => {
     let db_connect = dbo.getDb()
     let myquery = { _id: ObjectId(req.params.id) }
     db_connect.collection("users").deleteOne(myquery, function (err, obj) {

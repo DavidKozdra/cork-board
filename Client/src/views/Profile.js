@@ -16,42 +16,22 @@ import useUser from "../lib/useUser"
 import httpPost from "../lib/httpPost"
 import { useState } from "react"
 
-import { Link as RouterLink, useLocation } from "react-router-dom"
-
-function Copyright(props) {
-    return (
-        <Typography
-            variant="body2"
-            color="text.secondary"
-            align="center"
-            {...props}
-        >
-            {"Copyright © "}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{" "}
-            {new Date().getFullYear()}
-            {"."}
-        </Typography>
-    )
-}
 
 const theme = createTheme()
 
 export default function Profile() {
 
     let { mutateUser } = useUser({
-        redirectTo: "/",
+        redirectTo: "/Profile",
         redirectIfFound: true,
     })
     let [errorMsg, setErrorMsg] = useState("")
 
     let { user } = useUser()
-
+    console.log(user)
     const handleSubmit = async (event) => {
         event.preventDefault()
-        const formData = new FormData(event.currentTarget)
-        let data = await httpPost(`/api/user/delete/${user.id}`, {
+        let data = await httpPost(`/api/user/remove`, {
         }).then((body) => body.json())
         if (data.error) {
             setErrorMsg(data.error)
@@ -60,6 +40,20 @@ export default function Profile() {
         mutateUser(data)
     }
 
+    const updatePassword = async (event) => {
+        event.preventDefault()
+        const formData = new FormData();
+        
+        let data = await httpPost(`/api/user/update`, {
+            password: formData.get("password"),
+        }).then((body) => body.json())
+        if (data.error) {
+            setErrorMsg(data.error)
+            return
+        }
+        mutateUser(data)
+    }
+//
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
@@ -69,7 +63,12 @@ export default function Profile() {
                     {user.username}        
                 </Avatar>
                 
-    
+                <Box
+                        component="form"
+                        onSubmit={updatePassword}
+                        noValidate
+                        sx={{ mt: 1 }}
+                    >
                 <TextField
                             margin="normal"
                             required
@@ -80,9 +79,17 @@ export default function Profile() {
 
                         />
                             
-
+                            <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                        >
+                            Change Password
+                    </Button>
+                </Box>
                 <Button onClick={handleSubmit} style={{ "color": "red"}}>Remove your account </Button>
-             
+
             </Container>
         </ThemeProvider>
     )
