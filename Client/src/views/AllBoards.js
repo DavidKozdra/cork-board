@@ -111,7 +111,7 @@ function BasicModal() {
                 endIcon={<Add />}
                 onClick={() => setOpen(true)}
             >
-                Open Modal
+                New Board
             </Button>
             <Modal
                 open={open}
