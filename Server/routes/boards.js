@@ -101,13 +101,11 @@ boardRoutes.post("/add", session, async function (req, res) {
 })
 
 function validateBoardName(name) {
-    if (name === "undefined") return "Board Update Error: name is undefined"
+    if (name === "undefined" || name.length > 100 || name.length < 1)
+        return "Error: Name must be between 1 and 100 characters"
 
     if (typeof name !== "string")
-        return "Board Update Error: name is not a string"
-
-    // arbitrary values
-    if (name > 100 || name < 1) return "Board Update Error: name is undefined"
+        return "Board Update Error: Name is not a string"
     return true
 }
 
@@ -118,8 +116,11 @@ boardRoutes.post("/update/:id", async function (req, res) {
 
     let retVal = validateBoardName(req.body.name)
 
-    if (retVal !== true) return res.status(500).send(retVal)
-
+    if (retVal !== true) {
+        res.status(401)
+        res.json({ error: retVal })
+        return
+    }
     let newvalues = {
         $set: {
             name: req.body.name,

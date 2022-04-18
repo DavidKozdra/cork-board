@@ -14,7 +14,6 @@ import {
 import { useRef } from "react"
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
-import { Modal } from "@mui/material"
 import { PostsGrid } from "./PostsGrid"
 import useUser from "../lib/useUser"
 import { useState } from "react"
@@ -59,6 +58,7 @@ export default function BoardDisplayCard({ board }) {
     }
 
     function handleChange(event) {
+        // reload boards on change
         mutate(`/api/boards`, (boards) => {
             return boards
         })
@@ -68,7 +68,12 @@ export default function BoardDisplayCard({ board }) {
         <Card sx={{ minWidth: 275 }}>
             <CardContent>
                 <Typography
-                    sx={{ fontSize: 21 }}
+                    sx={{
+                        fontSize: 21,
+                        wordWrap: "normal",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                    }}
                     color="text.secondary"
                     gutterBottom
                 >
@@ -119,10 +124,6 @@ function EditModal({ board, onChange }) {
 
     const valueRef = useRef("")
 
-    function handleChange(event) {
-        onChange(event)
-    }
-
     const handleEdit = async (event) => {
         if (valueRef === undefined) return
         let values = {
@@ -132,18 +133,30 @@ function EditModal({ board, onChange }) {
             admin: board.admin,
             settings: board.settings,
         }
-        let data = await httpPost(`/api/boards/update/${board._id}`, values)
+        let data = await httpPost(
+            `/api/boards/update/${board._id}`,
+            values
+        ).then((body) => body.json())
+        // console.log("data: " + data)
         if (data.error) {
+            // console.log("error")
             setErrorMsg(data.error)
             return
         }
-        handleChange(event)
+        // console.log("no error check")
+        onChange(event)
         setOpen(false)
+    }
+
+    function handleOpen() {
+        // Clear errors on open
+        setErrorMsg("")
+        setOpen(true)
     }
 
     return (
         <div>
-            <Button onClick={() => setOpen(true)}>Edit modal</Button>
+            <Button onClick={handleOpen}>Edit</Button>
             <Dialog open={open} onClose={() => setOpen(false)}>
                 <DialogTitle>Edit Board</DialogTitle>
                 <DialogContent>
