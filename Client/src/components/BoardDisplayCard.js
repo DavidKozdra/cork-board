@@ -126,6 +126,9 @@ function EditModal({ board, onChange }) {
 
     const handleEdit = async (event) => {
         if (valueRef === undefined) return
+        // Remove undefined keys
+        // Object.keys(obj).forEach(key => obj[key] === undefined ? delete obj[key] : {});
+        //
         let values = {
             name: valueRef.current.value,
             posts: board.posts,

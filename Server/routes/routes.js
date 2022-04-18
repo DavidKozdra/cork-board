@@ -13,7 +13,7 @@ router.get("/", function (req, res) {
 })
 
 router.use("/users", usersRoute)
-
+router.use("/posts", postRoutes)
 router.use("/auth", AuthLoginRoute)
 router.use("/boards", boardRoutes)
 router.use("/hello", require("./hello"))

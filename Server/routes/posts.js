@@ -49,12 +49,13 @@ postRoutes.route("/add").post(function (req, res) {
         pictures: req.body.pictures,
         reaction: req.body.reaction,
         authorid: req.body.authorid,
+        posted_data: req.body.posted_data,
         datePosted: req.body.datePosted,
         expiration: req.body.expiration,
     }
 
     // insert user into database
-    db_connect.collection("posts").insertOne(userObj, function (err, response) {
+    db_connect.collection("posts").insertOne(postObj, function (err, response) {
         if (err) throw err
         res.json(response)
     })

@@ -14,6 +14,9 @@ import Register from "./views/Register"
 
 import Profile from "./views/Profile"
 
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment"
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
+
 function ForceLogin() {
     useUser({
         redirectTo: "/login",
@@ -30,11 +33,14 @@ function App() {
                 <Appbar />
                 <Switch>
                     <Route exact path="/">
-                        <AllBoards/>
+                        <AllBoards />
                     </Route>
-                    <Route path="/board/:id">
-                        <BoardView />
-                    </Route>
+                    {/* Date Picker Provider */}
+                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <Route path="/board/:id">
+                            <BoardView />
+                        </Route>
+                    </LocalizationProvider>
                     <Route path="/login">
                         <Login />
                     </Route>
