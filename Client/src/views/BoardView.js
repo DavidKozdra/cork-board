@@ -48,7 +48,7 @@ export default function BoardView() {
                 <Typography>
                     <br />
                 </Typography>
-                <AddPostModal></AddPostModal>
+                <AddPostModal board={board}></AddPostModal>
 
                 <Container>{body}</Container>
             </Box>
@@ -68,7 +68,7 @@ const style = {
     p: 4,
 }
 
-function AddPostModal() {
+function AddPostModal({ board }) {
     let { user } = useUser()
     const { data: posts, error, mutate: mutatePosts } = useSWR("/api/posts")
 
@@ -96,20 +96,21 @@ function AddPostModal() {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
 
+        console.log(user)
         // console.log("name: " + formData.get("PostName"));
         // console.log("content: " + formData.get("PostContent"));
         // console.log("toggle: " + selected);
         // console.log("date time: " + value);
 
-        let data = {
+        let postData = {
             header: formData.get("PostName"),
+            authorid: user.username,
             posted_data: formData.get("PostContent"),
             datePosted: new Date(),
-            expiration: 0,
+            expiration: undefined,
         }
 
-        if (selected) data.expiration = value
-        else data.expiration = undefined
+        if (selected) postData.expiration = value.toDate()
 
         // Object.keys(obj).forEach(key => obj[key] === undefined ? delete obj[key] : {});
 
@@ -122,9 +123,16 @@ function AddPostModal() {
         //     expiration: req.body.expiration,
         // }
 
-        let response = await httpPost(`/api/posts/add`, data).then((body) =>
+        // FIXME: make this actually work - think its because its returning early
+
+        let response = await httpPost(`/api/posts/add`, postData).then((body) =>
             body.json()
         )
+
+        let response2 = await httpPost(
+            `/api/boards/${board._id}/posts/add/${response.insertedId}}`,
+            { author: user.username }
+        ).then((body) => body.json())
 
         // let newPost = await fetch(
         //     `/api/posts/${response.insertedId}`
@@ -206,7 +214,7 @@ function AddPostModal() {
                             selected={selected}
                             onChange={() => {
                                 setSelected(!selected)
-                                console.log("selected", selected)
+                                //console.log("selected", selected)
                             }}
                         >
                             {selected ? (

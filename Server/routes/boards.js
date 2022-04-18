@@ -150,6 +150,59 @@ boardRoutes.post("/remove/:id", async function (req, response) {
 })
 
 // This section will help you get a list of all the records.
+boardRoutes.post("/:id/posts/add/:post_id", session, async function (req, res) {
+    if (req.session === undefined) {
+        res.status(401).json({
+            message: "You are not logged in.",
+        })
+        return
+    }
+
+    let db_connect = dbo.getDb("corkboard")
+
+    if (req.params.id === "undefined") {
+        res.status(401).json({
+            message: "Board ID is undefined.",
+        })
+        return
+    }
+
+    let queryID = { _id: ObjectId(req.params.id) }
+
+    if (req.params.post_id === "undefined") {
+        res.status(401).json({
+            message: "Post ID is undefined.",
+        })
+        return
+    }
+
+    if (
+        req.session.user.username !==
+        req.body.author /* && req.session.user.username != req.body.admin*/
+    ) {
+        res.status(401).json({
+            message: "You are not authorized to do this.",
+        })
+        return
+    }
+
+    let newPost = {
+        $push: {
+            posts: req.params.post_id,
+        },
+    }
+    db_connect
+        .collection("boards")
+        .updateOne(queryID, newPost, function (err, response) {
+            if (err) throw err
+            //console.log("1 document updated");
+            res.json(response)
+        })
+
+    res.status(200).send("Success")
+})
+
+// This section will help you get a list of all the records.
 boardRoutes.post(
     "/:id/posts/:postid/updatepost",
     session,
