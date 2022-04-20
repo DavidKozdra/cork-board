@@ -158,8 +158,6 @@ boardRoutes.post("/:id/posts/add/:post_id", session, async function (req, res) {
         return
     }
 
-    let db_connect = dbo.getDb("corkboard")
-
     if (req.params.id === "undefined") {
         res.status(401).json({
             message: "Board ID is undefined.",
@@ -186,6 +184,8 @@ boardRoutes.post("/:id/posts/add/:post_id", session, async function (req, res) {
         return
     }
 
+    let db_connect = dbo.getDb("corkboard")
+
     let newPost = {
         $push: {
             posts: req.params.post_id,
@@ -198,8 +198,6 @@ boardRoutes.post("/:id/posts/add/:post_id", session, async function (req, res) {
             //console.log("1 document updated");
             res.json(response)
         })
-
-    res.status(200).send("Success")
 })
 
 // This section will help you get a list of all the records.

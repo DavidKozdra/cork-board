@@ -10,7 +10,6 @@ import ToggleButton from "@mui/material/ToggleButton"
 import ToggleOffOutlinedIcon from "@mui/icons-material/ToggleOffOutlined"
 import ToggleOnOutlinedIcon from "@mui/icons-material/ToggleOnOutlined"
 import httpPost from "../lib/httpPost"
-
 import {
     Box,
     Container,
@@ -81,6 +80,9 @@ function AddPostModal({ board }) {
     // date picker
     const [value, setValue] = React.useState(new Date())
 
+    // errors
+    let [errorMsg, setErrorMsg] = React.useState("")
+
     // currently storing in unix time
     const handleChange = (newValue) => {
         setValue(newValue)
@@ -89,8 +91,6 @@ function AddPostModal({ board }) {
     /* TODO: need to check the expiration date being unix time vs other format
     // handle pictures
     // handle reactions
-    // authorid on server side?
-    // add post to the associated board
     */
     const handleSubmit = async (event) => {
         event.preventDefault()
@@ -110,7 +110,15 @@ function AddPostModal({ board }) {
             expiration: undefined,
         }
 
-        if (selected) postData.expiration = value.toDate()
+        if (selected) {
+            if (+value < +moment()) {
+                setErrorMsg(
+                    "Error: Expiration date/time cannot be in the past."
+                )
+                return
+            }
+            postData.expiration = value.toDate()
+        }
 
         // Object.keys(obj).forEach(key => obj[key] === undefined ? delete obj[key] : {});
 
@@ -122,22 +130,39 @@ function AddPostModal({ board }) {
         //     datePosted: req.body.datePosted,
         //     expiration: req.body.expiration,
         // }
-
-        // FIXME: make this actually work - think its because its returning early
-
-        let response = await httpPost(`/api/posts/add`, postData).then((body) =>
-            body.json()
+        let postResponse = await httpPost(`/api/posts/add`, postData).then(
+            (body) => body.json()
         )
+        if (postResponse.error) {
+            // console.log("error")
+            setErrorMsg(postResponse.error)
+            return
+        }
 
-        let response2 = await httpPost(
-            `/api/boards/${board._id}/posts/add/${response.insertedId}}`,
+        let boardResponse = await httpPost(
+            `/api/boards/${board._id}/posts/add/${postResponse.insertedId}`,
             { author: user.username }
         ).then((body) => body.json())
 
-        // let newPost = await fetch(
-        //     `/api/posts/${response.insertedId}`
-        // ).then((body) => body.json())
-        // mutatePosts([...posts, newPost])
+        if (boardResponse.error) {
+            // console.log("error")
+            setErrorMsg(boardResponse.error)
+            return
+        }
+
+        let newPost = await fetch(`/api/posts/${postResponse.insertedId}`).then(
+            (body) => body.json()
+        )
+
+        if (newPost.error) {
+            // console.log("error")
+            setErrorMsg(newPost.error)
+            return
+        }
+
+        mutatePosts([...posts, newPost])
+        // console.log(newPost)
+        // console.log(posts)
         setOpen(false)
     }
 
@@ -147,7 +172,10 @@ function AddPostModal({ board }) {
                 variant="contained"
                 color="primary"
                 endIcon={<Add />}
-                onClick={() => setOpen(true)}
+                onClick={() => {
+                    setOpen(true)
+                    setValue(new Date())
+                }}
             >
                 New Post
             </Button>
@@ -234,7 +262,6 @@ function AddPostModal({ board }) {
                                 value={value}
                                 onChange={handleChange}
                                 disablePast
-                                minTime={moment()}
                                 renderInput={(params) => (
                                     <TextField {...params} />
                                 )}
@@ -250,6 +277,17 @@ function AddPostModal({ board }) {
                     <Button type="submit" variant="contained" color="primary">
                         Create New Post
                     </Button>
+
+                    {errorMsg ? (
+                        <Typography
+                            sx={{ mt: 3, textAlign: "center" }}
+                            color="error"
+                        >
+                            {errorMsg}
+                        </Typography>
+                    ) : (
+                        <></>
+                    )}
                 </Box>
             </Modal>
         </div>
