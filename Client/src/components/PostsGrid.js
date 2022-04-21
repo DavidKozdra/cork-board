@@ -2,14 +2,28 @@ import GridLayout from "react-grid-layout"
 import React from "react"
 import httpPost from "../lib/httpPost"
 import PostCard from "./PostCard"
+import useUser from "../lib/useUser"
 
 export function PostsGrid({ posts }) {
-    function updatePos(updated) {
+    let { user } = useUser()
+
+    let postById = (id) => {
+        for (let post of posts) {
+            if (post._id === id) {
+                return post
+            }
+        }
+    }
+
+    let updatePos = (updated) => {
         for (let l of updated) {
-            httpPost(`/api/boards/${1}/posts/${l.i}/updatepos`, {
-                id: l.i,
-                gridData: l,
-            })
+            let post = postById(l.i)
+            if (post.author === user.username) {
+                httpPost(`/api/boards/${1}/posts/${l.i}/updatepos`, {
+                    id: l.i,
+                    gridData: l,
+                })
+            }
         }
     }
 
@@ -23,7 +37,7 @@ export function PostsGrid({ posts }) {
             onResizeStop={updatePos}
             compactType={null}
         >
-            {(posts??[]).map((post) => {
+            {(posts ?? []).map((post) => {
                 let grid = {
                     ...post.shape,
                     minW: 1,
@@ -33,17 +47,19 @@ export function PostsGrid({ posts }) {
                 }
 
                 return (
-                    <div style={{fontSize: "5%"}} key={post._id} data-grid={grid}>
-
-                        <PostCard posts={post} title={post.title} content={post.body} author={post.author} MaxWidth={ grid.maxW}>
-                            
-                            
-                        </PostCard>
-
-
+                    <div
+                        style={{ fontSize: "5%" }}
+                        key={post._id}
+                        data-grid={grid}
+                    >
+                        <PostCard
+                            posts={post}
+                            title={post.title}
+                            content={post.body}
+                            author={post.author}
+                            MaxWidth={grid.maxW}
+                        ></PostCard>
                     </div>
-
-        
                 )
             })}
         </GridLayout>
