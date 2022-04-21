@@ -76,15 +76,15 @@ export default function RecipeReviewCard(props) {
             <MoreVertIcon />
           </IconButton>
         }
-        title={ props.posts.title+ " By "+ props.posts.author}
+        title={ props.posts.title+ " by "+ props.posts.author}
         subheader={ props.posts.date }
       />
-      <CardMedia
+      {/* <CardMedia
         component="img"
         height="194"
         image="/static/images/cards/paella.jpg"
         alt="img placeholder"
-      />
+      /> */}
       <CardContent>
         <Typography paragraph>
             { props.posts.body }
@@ -107,9 +107,6 @@ export default function RecipeReviewCard(props) {
         </ExpandMore>
 
         
-        {/*(user.username === post.author) ? <Button size="small" onClick={handleEdit}> Edit </Button> : <></>*/}
-        
-        {/*(user.username === post.author) ? <Button size="small" onClick={handleRemove}> Edit </Button> : <></>*/}
 
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>

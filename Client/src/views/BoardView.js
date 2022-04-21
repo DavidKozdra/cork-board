@@ -103,8 +103,8 @@ function AddPostModal({ board }) {
         // console.log("date time: " + value);
 
         let postData = {
-            header: formData.get("PostName"),
-            posted_data: formData.get("PostContent"),
+            title: formData.get("PostName"),
+            body: formData.get("PostContent"),
             datePosted: new Date(),
             expiration: undefined,
             boardid: board._id,

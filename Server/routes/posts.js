@@ -65,11 +65,11 @@ postRoutes.post("/add", session, async function (req, res) {
     
     // put req params into object
     let postObj = {
-        header: req.body.header,
+        title: req.body.title,
         pictures: req.body.pictures,
         reaction: req.body.reaction,
         author: req.session.user.username,
-        posted_data: req.body.posted_data,
+        body: req.body.body,
         datePosted: req.body.datePosted,
         expiration: req.body.expiration,
         shape: {
@@ -94,7 +94,7 @@ postRoutes.route("/update/:id").post(function (req, res) {
     let myquery = { _id: ObjectId(req.params.id) }
     let newvalues = {
         $set: {
-            header: req.body.header,
+            title: req.body.title,
             pictures: req.body.pictures,
             reaction: req.body.reaction,
             authorid: req.body.authorid,
