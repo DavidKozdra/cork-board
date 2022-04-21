@@ -70,7 +70,7 @@ export default function BoardDisplayCard({ board }) {
                 <Typography
                     sx={{
                         fontSize: 21,
-                        wordWrap: "normal",
+                        whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                     }}
