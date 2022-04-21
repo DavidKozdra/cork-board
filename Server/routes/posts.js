@@ -4,6 +4,7 @@ var postRoutes = express.Router()
 
 // This will help us connect to the database
 const dbo = require("../dbcon")
+const { default: session } = require("../session")
 
 // This help convert the id from string to ObjectId for the _id.
 const ObjectId = require("mongodb").ObjectId
@@ -38,27 +39,44 @@ postRoutes.route("/:id").get(function (req, res) {
 
 
 // This section will help you create a new record.
-postRoutes.route("/add").post(function (req, res) {
+postRoutes.post("/add", session, async function (req, res) {
     let db_connect = dbo.getDb()
+    if (req.session?.user === undefined) {
+        res.status(401).json({
+            message: "You are not logged in.",
+        })
+        return
+    }
+    
+    
 
     //console.log("req: " + JSON.stringify(req.body));
 
+    let boardid = req.body.boardid;
+    
     // put req params into object
     let postObj = {
         header: req.body.header,
         pictures: req.body.pictures,
         reaction: req.body.reaction,
-        authorid: req.body.authorid,
+        author: req.session.user.username,
         posted_data: req.body.posted_data,
         datePosted: req.body.datePosted,
         expiration: req.body.expiration,
+        shape: {
+            x: 1,
+            y: 1,
+            h: 4,
+            w: 4,
+        }
     }
 
     // insert user into database
-    db_connect.collection("posts").insertOne(postObj, function (err, response) {
-        if (err) throw err
-        res.json(response)
-    })
+    let result = await db_connect.collection("posts").insertOne(postObj)
+
+    
+    let board = await db_connect.collection("boards").updateOne({ _id: new ObjectId(boardid), }, { $push: { posts: result.insertedId } })
+    res.json({ "post": postObj });
 })
 
 // This section will help you update a record by id.

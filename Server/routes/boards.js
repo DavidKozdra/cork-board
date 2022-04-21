@@ -149,60 +149,67 @@ boardRoutes.post("/remove/:id", async function (req, response) {
     })
 })
 
-// This section will help you get a list of all the records.
-boardRoutes.post("/:id/posts/add/:post_id", session, async function (req, res) {
-    if (req.session === undefined) {
-        res.status(401).json({
-            message: "You are not logged in.",
-        })
-        return
-    }
+// boardRoutes.post("/:id/posts/add/:post_id", session, async function (req, res) {
+//     if (req.session === undefined) {
+//         res.status(401).json({
+//             message: "You are not logged in.",
+//         })
+//         return
+//     }
 
-    if (req.params.id === "undefined") {
-        res.status(401).json({
-            message: "Board ID is undefined.",
-        })
-        return
-    }
+//     if (req.params.id === "undefined") {
+//         res.status(401).json({
+//             message: "Board ID is undefined.",
+//         })
+//         return
+//     }
 
-    let queryID = { _id: ObjectId(req.params.id) }
+//     let queryID = { _id: ObjectId(req.params.id) }
 
-    if (req.params.post_id === "undefined") {
-        res.status(401).json({
-            message: "Post ID is undefined.",
-        })
-        return
-    }
+//     if (req.params.post_id === "undefined") {
+//         res.status(401).json({
+//             message: "Post ID is undefined.",
+//         })
+//         return
+//     }
 
-    if (
-        req.session.user.username !==
-        req.body.author /* && req.session.user.username != req.body.admin*/
-    ) {
-        res.status(401).json({
-            message: "You are not authorized to do this.",
-        })
-        return
-    }
+//     if (
+//         req.session.user.username !==
+//         req.body.author /* && req.session.user.username != req.body.admin*/
+//     ) {
+//         res.status(401).json({
+//             message: "You are not authorized to do this.",
+//         })
+//         return
+//     }
 
-    let db_connect = dbo.getDb("corkboard")
+//     let db_connect = dbo.getDb("corkboard")
 
-    let newPost = {
-        $push: {
-            posts: req.params.post_id,
-        },
-    }
-    db_connect
-        .collection("boards")
-        .updateOne(queryID, newPost, function (err, response) {
-            if (err) throw err
-            //console.log("1 document updated");
-            res.json(response)
-        })
-})
+//     let newPost = {
+//         $push: {
+//             posts: req.params.post_id,
+//         },
+//     }
+//     db_connect
+//         .collection("boards")
+//         .updateOne(queryID, newPost, function (err, response) {
+//             if (err) throw err
+            
+//             response.posts.push(req.body)
+
+//             // insert new post
+//             db_connect.collection("posts").insertOne(req.body, function (err, response) {
+//                 if (err) throw err
+//                 res.json(response)
+//             })
+
+//             res.json(response)
+//         })
+// })
 
 // This section will help you get a list of all the records.
 boardRoutes.post(
-    "/:id/posts/:postid/updatepost",
+    "/:id/posts/:postid/updatepos",
     session,
     async function (req, res) {
         if (req.session === undefined) {

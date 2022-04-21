@@ -96,7 +96,7 @@ function AddPostModal({ board }) {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
 
-        console.log(user)
+        console.log(formData)
         // console.log("name: " + formData.get("PostName"));
         // console.log("content: " + formData.get("PostContent"));
         // console.log("toggle: " + selected);
@@ -104,11 +104,12 @@ function AddPostModal({ board }) {
 
         let postData = {
             header: formData.get("PostName"),
-            authorid: user.username,
             posted_data: formData.get("PostContent"),
             datePosted: new Date(),
             expiration: undefined,
+            boardid: board._id,
         }
+        console.log(postData)
 
         if (selected) {
             if (+value < +moment()) {
@@ -139,26 +140,27 @@ function AddPostModal({ board }) {
             return
         }
 
-        let boardResponse = await httpPost(
-            `/api/boards/${board._id}/posts/add/${postResponse.insertedId}`,
-            { author: user.username }
-        ).then((body) => body.json())
+        // let boardResponse = await httpPost(
+        //     `/api/boards/${board._id}/posts/add/${postResponse.insertedId}`,
+        //     { author: user.username }
+        // ).then((body) => body.json())
 
-        if (boardResponse.error) {
-            // console.log("error")
-            setErrorMsg(boardResponse.error)
-            return
-        }
+        // if (boardResponse.error) {
+        //     // console.log("error")
+        //     setErrorMsg(boardResponse.error)
+        //     return
+        // }
+        let newPost = postResponse.post
 
-        let newPost = await fetch(`/api/posts/${postResponse.insertedId}`).then(
-            (body) => body.json()
-        )
+        // let newPost = await fetch(`/api/posts/${postResponse.insertedId}`).then(
+        //     (body) => body.json()
+        // )
 
-        if (newPost.error) {
-            // console.log("error")
-            setErrorMsg(newPost.error)
-            return
-        }
+        // if (newPost.error) {
+        //     // console.log("error")
+        //     setErrorMsg(newPost.error)
+        //     return
+        // }
 
         mutatePosts([...posts, newPost])
         // console.log(newPost)
