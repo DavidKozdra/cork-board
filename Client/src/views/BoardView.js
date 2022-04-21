@@ -33,7 +33,7 @@ export default function BoardView() {
     if (error) body = <p>An error occurred fetching the board... {error}</p>
     if (board === null) body = <p>Error: Board does not exist</p>
     if (!board) body = <p>Loading board..</p>
-    if (board) body = <PostsGrid posts={board.posts}></PostsGrid>
+    if (board) body = <PostsGrid posts={board.posts} boardid={board._id}></PostsGrid>
 
     return (
         <>

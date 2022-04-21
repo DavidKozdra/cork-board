@@ -36,8 +36,6 @@ postRoutes.route("/:id").get(function (req, res) {
     })
 })
 
-
-
 // This section will help you create a new record.
 postRoutes.post("/add", session, async function (req, res) {
     let db_connect = dbo.getDb()
@@ -61,8 +59,6 @@ postRoutes.post("/add", session, async function (req, res) {
         return
     }
 
-
-    
     // put req params into object
     let postObj = {
         title: req.body.title,
@@ -77,15 +73,19 @@ postRoutes.post("/add", session, async function (req, res) {
             y: 1,
             h: 4,
             w: 4,
-        }
+        },
     }
 
     // insert user into database
     let result = await db_connect.collection("posts").insertOne(postObj)
 
-    
-    let board = await db_connect.collection("boards").updateOne({ _id: new ObjectId(boardid), }, { $push: { posts: result.insertedId } })
-    res.json({ "post": postObj });
+    let board = await db_connect
+        .collection("boards")
+        .updateOne(
+            { _id: new ObjectId(boardid) },
+            { $push: { posts: result.insertedId } }
+        )
+    res.json({ post: postObj })
 })
 
 // This section will help you update a record by id.
@@ -103,7 +103,6 @@ postRoutes.route("/update/:id").post(function (req, res) {
         },
     }
 
-    
     db_connect
         .collection("posts")
         .updateOne(myquery, newvalues, function (err, response) {
@@ -114,7 +113,14 @@ postRoutes.route("/update/:id").post(function (req, res) {
 })
 
 // This section will help you delete a record
-postRoutes.route("/remove/:id").delete((req, response) => {
+postRoutes.post("/remove/:id", session, (req, response) => {
+    if (req.session?.user === undefined) {
+        res.status(401).json({
+            message: "You are not logged in.",
+        })
+        return
+    }
+
     let db_connect = dbo.getDb()
     let myquery = { _id: ObjectId(req.params.id) }
     db_connect.collection("posts").deleteOne(myquery, function (err, obj) {

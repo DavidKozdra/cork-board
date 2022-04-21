@@ -4,7 +4,7 @@ import httpPost from "../lib/httpPost"
 import PostCard from "./PostCard"
 import useUser from "../lib/useUser"
 
-export function PostsGrid({ posts }) {
+export function PostsGrid({ posts, boardid }) {
     let { user } = useUser()
 
     let postById = (id) => {
@@ -58,6 +58,7 @@ export function PostsGrid({ posts }) {
                             content={post.body}
                             author={post.author}
                             MaxWidth={grid.maxW}
+                            boardid={boardid}
                         ></PostCard>
                     </div>
                 )
