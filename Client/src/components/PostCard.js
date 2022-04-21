@@ -63,6 +63,7 @@ export default function RecipeReviewCard(props) {
     }
 }
 */
+    const [liked, setLiked] = React.useState(false)
 
     const { mutate } = useSWRConfig()
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -142,8 +143,14 @@ export default function RecipeReviewCard(props) {
                 <Typography paragraph>{props.posts.body}</Typography>
             </CardContent>
             <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
+                <IconButton
+                    aria-label="add to favorites"
+                    onClick={() => {
+                        console.log("clicked liked: ", liked)
+                        setLiked(!liked)
+                    }}
+                >
+                    <FavoriteIcon color={liked ? "error" : undefined} />
                 </IconButton>
                 <IconButton aria-label="share">
                     <ShareIcon />
