@@ -219,6 +219,7 @@ function AddPostModal({ board }) {
                             mb: 3,
                             width: "100%",
                         }}
+                        autoFocus
                     ></TextField>
 
                     <TextField
