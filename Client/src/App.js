@@ -31,28 +31,27 @@ function App() {
             <Router>
                 <ForceLogin />
                 <Appbar />
-                <Switch>
-                    <Route exact path="/">
-                        <AllBoards />
-                    </Route>
-                    {/* Date Picker Provider */}
-                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                    <Switch>
+                        <Route exact path="/">
+                            <AllBoards />
+                        </Route>
                         <Route path="/board/:id">
                             <BoardView />
                         </Route>
-                    </LocalizationProvider>
-                    <Route path="/login">
-                        <Login />
-                    </Route>
+                        <Route path="/login">
+                            <Login />
+                        </Route>
 
-                    <Route path="/register">
-                        <Register />
-                    </Route>
+                        <Route path="/register">
+                            <Register />
+                        </Route>
 
-                    <Route path="/profile">
-                        <Profile />
-                    </Route>
-                </Switch>
+                        <Route path="/profile">
+                            <Profile />
+                        </Route>
+                    </Switch>
+                </LocalizationProvider>
             </Router>
         </>
     )
