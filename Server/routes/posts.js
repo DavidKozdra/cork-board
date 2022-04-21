@@ -47,12 +47,21 @@ postRoutes.post("/add", session, async function (req, res) {
         })
         return
     }
-    
-    
 
-    //console.log("req: " + JSON.stringify(req.body));
+    let boardid = req.body.boardid
 
-    let boardid = req.body.boardid;
+    let authCheck = await db_connect.collection("boards").findOne({
+        _id: ObjectId(boardid),
+        users: { $in: [req.session.user.username] },
+    })
+    if (authCheck === null) {
+        res.status(403).json({
+            message: "You don't have access to this board",
+        })
+        return
+    }
+
+
     
     // put req params into object
     let postObj = {
