@@ -124,16 +124,6 @@ function AddPostModal({ board }) {
             postData.expiration = value.toDate()
         }
 
-        // Object.keys(obj).forEach(key => obj[key] === undefined ? delete obj[key] : {});
-
-        // let postObj = {
-        //     header: req.body.header,
-        //     pictures: req.body.pictures,
-        //     reaction: req.body.reaction,
-        //     authorid: req.body.authorid,
-        //     datePosted: req.body.datePosted,
-        //     expiration: req.body.expiration,
-        // }
         let postResponse = await httpPost(`/api/posts/add`, postData).then(
             (body) => body.json()
         )
@@ -142,11 +132,6 @@ function AddPostModal({ board }) {
             setErrorMsg(postResponse.error)
             return
         }
-
-        // let boardResponse = await httpPost(
-        //     `/api/boards/${board._id}/posts/add/${postResponse.insertedId}`,
-        //     { author: user.username }
-        // ).then((body) => body.json())
 
         // if (boardResponse.error) {
         //     // console.log("error")
